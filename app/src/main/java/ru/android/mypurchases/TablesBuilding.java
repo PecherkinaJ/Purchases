@@ -12,20 +12,22 @@ public class TablesBuilding extends AppCompatActivity {
     TableLayout table1;
     TableRow row1;
     LinearLayout linlay1;
-    TextView tv;
+    TextView tv1;
 
 
-    public void HeadRow(TableLayout table, TableRow row, TextView tv, String firstColumnName) {
+    //public void HeadRow(TableLayout table, TableRow row, TextView tv, String firstColumnName) {
+    public void HeadRow(TableLayout table, TableRow row, TextView tv1, String firstColumnName) {
 
         TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
         TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
 
         row.setLayoutParams(tableParams);
 
-        tv.setLayoutParams(rowParams);
-        tv.setText(firstColumnName);
+        tv1.setLayoutParams(rowParams);
+        tv1.setText(firstColumnName);
 
-        row.addView(tv);
+        row.addView(tv1);
+        row.addView(tv1);
         table.addView(row);
 
        /* TextView date1 = new TextView(this);
