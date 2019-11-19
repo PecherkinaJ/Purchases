@@ -1,5 +1,6 @@
 package ru.android.mypurchases;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.LinearLayout;
@@ -9,26 +10,29 @@ import android.widget.TextView;
 
 public class TablesBuilding extends AppCompatActivity {
 
-    TableLayout table1;
-    TableRow row1;
+    //TableLayout table1;
+    //TableRow row;
     LinearLayout linlay1;
-    TextView tv1;
+    //TextView tv;
 
 
-    //public void HeadRow(TableLayout table, TableRow row, TextView tv, String firstColumnName) {
-    public void HeadRow(TableLayout table, TableRow row, TextView tv1, String firstColumnName) {
+    public void HeadRow(TableLayout table, String firstColumnName) {
 
         TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
         TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
 
+        //TableLayout table = new TableLayout(this);
+
+        TableRow row = new TableRow(TablesBuilding.this);
         row.setLayoutParams(tableParams);
 
-        tv1.setLayoutParams(rowParams);
-        tv1.setText(firstColumnName);
+        TextView tv = new TextView(TablesBuilding.this);
+        tv.setLayoutParams(rowParams);
+        tv.setText(firstColumnName);
 
-        row.addView(tv1);
-        row.addView(tv1);
+        row.addView(tv);
         table.addView(row);
+        setContentView(table);
 
        /* TextView date1 = new TextView(this);
         TextView good1 = new TextView(this);
@@ -48,10 +52,10 @@ public class TablesBuilding extends AppCompatActivity {
         price1.setPadding(25, 5, 25, 5);
         price1.setTypeface(null, Typeface.BOLD_ITALIC);
 
-        date1.setText(" Дата:");
-        good1.setText("Продукт:");
-        price1.setText("Цена:");
-        com1.setText("Коммент"); */
+        date1.setText("");
+        good1.setText("");
+        price1.setText("");
+        com1.setText(""); */
 
     }
 

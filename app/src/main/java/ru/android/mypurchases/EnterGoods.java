@@ -100,7 +100,7 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
         DBobj = new DataBase(this);
 
         TBobj = new TablesBuilding();
-        TBobj.HeadRow(tablelay, row, tv, " ID: ");
+        TBobj.HeadRow( tablelay, " ID: ");
         //TBobj.DisplayTable();
     }
 
