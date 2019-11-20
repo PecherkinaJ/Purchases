@@ -6,12 +6,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.TableLayout;
+
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 
 public class DataBase extends SQLiteOpenHelper {
 
     String logs = "MYLOGS";
     ContentValues cv = new ContentValues();
+    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+    TablesBuilding TBobj;
 
 
     public DataBase(Context context) {
@@ -38,16 +45,27 @@ public class DataBase extends SQLiteOpenHelper {
 
     }
 
-    public void realizeCursors(Cursor c) {
+    //public void realizeCursors(Cursor c) {
+    public void realizeCursors(SQLiteDatabase db, Context context, TableLayout table) {
+
+        //SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query("MYPURCH", null, null, null, null, null, null);
+
+        TBobj = new TablesBuilding();
+        //TBobj.DisplayExistingTable(context, table, "id", "date", "good", "price", true);
 
         if (c.moveToFirst()) {
-            int idColIndex = c.getColumnIndex("id");
-            int dateColIndex = c.getColumnIndex("date");
-            int goodColIndex = c.getColumnIndex("good");
-            int priceColIndex = c.getColumnIndex("price");
-            int comColIndex = c.getColumnIndex("comment");
-
             do {
+                long a = c.getLong(c.getColumnIndex("date"));
+                GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
+                calendar.setTimeInMillis(a);
+
+                String strID = c.getString(c.getColumnIndex("id"));
+                String strDate = sdf.format(calendar.getTime());
+                String strGood = c.getString(c.getColumnIndex("good"));
+                String strPrice = c.getString(c.getColumnIndex("price"));
+
+                TBobj.DisplayExistingTable(context, table, strID, strDate, strGood, strPrice, true);
 
             } while (c.moveToLast());
         }
@@ -66,6 +84,7 @@ public class DataBase extends SQLiteOpenHelper {
 
     public void fillingDB(String DBfield, Float insertData) {
         cv.put(DBfield, insertData);
+        Log.d(logs, "inserted: "+insertData);
     }
 
     protected void proverka(SQLiteDatabase db) {

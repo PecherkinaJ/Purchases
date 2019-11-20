@@ -30,9 +30,6 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
     Button btnCancel;
 
     TableLayout tablelay;
-    TableRow row;
-    TableRow t;
-    TextView tv;
 
     Date dateToday, enterDate;
     String dateToday1;
@@ -59,9 +56,6 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
         etDate = (EditText) findViewById(R.id.etDate);
 
         tablelay = (TableLayout) findViewById(R.id.tablelay);
-        row = new TableRow(this);
-        row.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
-        tv = new TextView(this);
 
         sdf = new SimpleDateFormat("dd.MM.yyyy");
         myCalendar = Calendar.getInstance();
@@ -100,8 +94,14 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
         DBobj = new DataBase(this);
 
         TBobj = new TablesBuilding();
-        TBobj.HeadRow( tablelay, " ID: ");
-        //TBobj.DisplayTable();
+        TBobj.HeadRow(EnterGoods.this, tablelay, " ID: ", "Дата:",
+                "Продукт:", "Цена:", true);
+
+        SQLiteDatabase db = DBobj.getReadableDatabase();
+        DBobj.realizeCursors(db, EnterGoods.this, tablelay);
+
+        //TBobj.DisplayExistingTable(this, tablelay, "1", "20.11.2019", "Проба", "1");
+        //TBobj.DisplayExistingTable(this, tablelay);
     }
 
     public void onClick(View v) {
