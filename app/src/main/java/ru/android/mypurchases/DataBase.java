@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.TableLayout;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -18,7 +19,7 @@ public class DataBase extends SQLiteOpenHelper {
     String logs = "MYLOGS";
     ContentValues cv = new ContentValues();
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-    TablesBuilding TBobj;
+    TablesBuilding TBobj = new TablesBuilding();
 
 
     public DataBase(Context context) {
@@ -45,16 +46,16 @@ public class DataBase extends SQLiteOpenHelper {
 
     }
 
-    //public void realizeCursors(Cursor c) {
-    public void realizeCursors(SQLiteDatabase db, Context context, TableLayout table) {
 
-        //SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.query("MYPURCH", null, null, null, null, null, null);
+    public void DisplayExistingTable(SQLiteDatabase db, Context context, TableLayout table) {
 
-        TBobj = new TablesBuilding();
-        //TBobj.DisplayExistingTable(context, table, "id", "date", "good", "price", true);
+        long dateToday = System.currentTimeMillis();
+        long weekAgo = dateToday - 604800000;
+        Cursor c = db.rawQuery("SELECT * FROM myPurch " +
+                " WHERE date >= " + weekAgo +
+                " AND date <= " + dateToday, null);
 
-        if (c.moveToFirst()) {
+        if (c.moveToLast()) {
             do {
                 long a = c.getLong(c.getColumnIndex("date"));
                 GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
@@ -67,25 +68,64 @@ public class DataBase extends SQLiteOpenHelper {
 
                 TBobj.DisplayExistingTable(context, table, strID, strDate, strGood, strPrice, true);
 
-            } while (c.moveToLast());
+            } while (c.moveToPrevious());
+        }
+        c.close();
+    }
+
+
+    public void FillingDB(long insertData, String insertGood, float insertPrice, String comment) {
+        cv.put("date", insertData);
+        cv.put("good", insertGood);
+        cv.put("price", insertPrice);
+        cv.put("comment", comment);
+        this.getWritableDatabase().insert("myPurch", null, cv);
+    }
+
+
+    public void UpdatingTable(SQLiteDatabase db, Context context, TableLayout table) {
+        Cursor c = db.query("mypurch", null, null, null, null, null, null);
+
+        if (c.moveToLast()) {
+            do {
+                long a = c.getLong(c.getColumnIndex("date"));
+                GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
+                calendar.setTimeInMillis(a);
+
+                String strID = c.getString(c.getColumnIndex("id"));
+                String strDate = sdf.format(calendar.getTime());
+                String strGood = c.getString(c.getColumnIndex("good"));
+                String strPrice = c.getString(c.getColumnIndex("price"));
+
+                TBobj.DisplayExistingTable(context, table, strID, strDate, strGood, strPrice, true);
+
+            } while (c.isClosed());
+        }
+        c.close();
+    }
+
+
+    public void ShowCommentPopup(int clickedRow) {
+        Cursor c = this.getWritableDatabase().rawQuery("SELECT * FROM MYTABLE WHERE ID = " + clickedRow, null);
+
+        if (c.moveToFirst()) {
+            do {
+                String IDText = c.getString(c.getColumnIndex("id"));
+
+                long a = c.getLong(c.getColumnIndex("date"));
+                GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
+                calendar.setTimeInMillis(a);
+                String dateText = sdf.format(calendar.getTime());
+
+                String goodText = c.getString(c.getColumnIndex("good"));
+                String priceText = c.getString(c.getColumnIndex("price"));
+
+                Log.d(logs, "id = " + IDText + ", date = " + dateText + ", good = " + goodText + ", price = " + priceText);
+
+            } while (c.moveToNext());
         }
     }
 
-
-    public void fillingDB(String DBfield, long insertData) {
-        cv.put(DBfield, insertData);
-        Log.d(logs, "inserted: "+insertData);
-    }
-
-    public void fillingDB(String DBfield, String insertData) {
-        cv.put(DBfield, insertData);
-        Log.d(logs, "inserted: "+insertData);
-    }
-
-    public void fillingDB(String DBfield, Float insertData) {
-        cv.put(DBfield, insertData);
-        Log.d(logs, "inserted: "+insertData);
-    }
 
     protected void proverka(SQLiteDatabase db) {
         Log.d(logs, "--- Rows in mytable: ---");

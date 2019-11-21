@@ -1,10 +1,12 @@
 package ru.android.mypurchases;
 
 import android.app.DatePickerDialog;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -18,6 +20,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 
 public class EnterGoods extends AppCompatActivity implements View.OnClickListener {
@@ -37,6 +41,7 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
     Calendar myCalendar;
 
     DataBase DBobj;
+    SQLiteDatabase db;
 
     TablesBuilding TBobj;
 
@@ -56,6 +61,7 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
         etDate = (EditText) findViewById(R.id.etDate);
 
         tablelay = (TableLayout) findViewById(R.id.tablelay);
+        tablelay.setColumnStretchable(2, true);
 
         sdf = new SimpleDateFormat("dd.MM.yyyy");
         myCalendar = Calendar.getInstance();
@@ -92,13 +98,14 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
 
 
         DBobj = new DataBase(this);
+        db = DBobj.getReadableDatabase();
 
         TBobj = new TablesBuilding();
         TBobj.HeadRow(EnterGoods.this, tablelay, " ID: ", "Дата:",
                 "Продукт:", "Цена:", true);
 
-        SQLiteDatabase db = DBobj.getReadableDatabase();
-        DBobj.realizeCursors(db, EnterGoods.this, tablelay);
+        Log.d("mylogs", "db = " + db);
+        DBobj.DisplayExistingTable(db, EnterGoods.this, tablelay);
 
         //TBobj.DisplayExistingTable(this, tablelay, "1", "20.11.2019", "Проба", "1");
         //TBobj.DisplayExistingTable(this, tablelay);
@@ -150,12 +157,10 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
                 }
                 */
 
-                DBobj.fillingDB("date", dateMS);
-                DBobj.fillingDB("good", good);
-                DBobj.fillingDB("price", price);
-                DBobj.fillingDB("comment", "");
-
+                DBobj.FillingDB(dateMS, good, price, "");
                 SQLiteDatabase db = DBobj.getWritableDatabase();
+                DBobj.UpdatingTable(db, this, tablelay);
+
                 DBobj.proverka(db);
 
             case R.id.btnCancel:

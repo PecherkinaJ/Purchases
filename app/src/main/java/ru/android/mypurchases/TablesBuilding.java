@@ -2,10 +2,10 @@ package ru.android.mypurchases;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -17,12 +17,15 @@ public class TablesBuilding extends Activity {
 
     TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
     TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+    TableRow row;
+
+    PopupMenu popup;
 
 
     public void HeadRow(Context context, TableLayout table, String IDColName, String secondColName,
                         String thirdColName, String fourthColName, Boolean hidingFirstColumn) {
 
-        TableRow row = new TableRow(context);
+        row = new TableRow(context);
         row.setLayoutParams(tableParams);
 
         TextView ID1 = new TextView(context);
@@ -62,7 +65,7 @@ public class TablesBuilding extends Activity {
         if (hidingFirstColumn) ID1.setVisibility(View.GONE);
     }
 
-    public void DisplayExistingTable(Context context, TableLayout table, String ID, String Date,
+    public void DisplayExistingTable(final Context context, TableLayout table, String ID, String Date,
                                      String Good, String Price, Boolean hidingFirstColumn) {
     //public void DisplayExistingTable(Context context, TableLayout table) {
         /*this.ID = ID;
@@ -75,7 +78,7 @@ public class TablesBuilding extends Activity {
         Good = "good";
         Price = "price";*/
 
-        TableRow row = new TableRow(context);
+        row = new TableRow(context);
         row.setLayoutParams(tableParams);
 
         tvID = new TextView(context);
@@ -106,8 +109,23 @@ public class TablesBuilding extends Activity {
         row.addView(tvGood);
         row.addView(tvPrice);
 
-        table.addView(row);
+        table.addView(row, 1);
         if (hidingFirstColumn) tvID.setVisibility(View.GONE);
+
+        row.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO Auto-generated method stub
+                v.setBackgroundColor(Color.GRAY);
+                popup = new PopupMenu();
+                popup.PopupInEnterGoods(v, context);
+                return true;
+            }
+        });
+        registerForContextMenu(row);
     }
+
+
 
 }
