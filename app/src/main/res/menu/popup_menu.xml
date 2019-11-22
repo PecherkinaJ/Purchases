@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/MENU_COMMENT"
+        android:title="Комментарий"/>
+    <item
+        android:id="@+id/MENU_EDIT"
+        android:title="Редактировать элемент"/>
+    <item
+        android:id="@+id/MENU_DELETE"
+        android:title="Удалить элемент"/>
+
+</menu>

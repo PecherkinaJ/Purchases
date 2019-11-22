@@ -106,7 +106,7 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public void ShowCommentPopup(int clickedRow) {
-        Cursor c = this.getWritableDatabase().rawQuery("SELECT * FROM MYTABLE WHERE ID = " + clickedRow, null);
+        Cursor c = this.getWritableDatabase().rawQuery("SELECT * FROM myPurch WHERE ID = " + clickedRow, null);
 
         if (c.moveToFirst()) {
             do {

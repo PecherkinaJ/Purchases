@@ -5,25 +5,35 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 public class TablesBuilding extends Activity {
 
+    Context context;
+
     TextView tvID, tvDate, tvGood, tvPrice;
-    //private String ID, Date, Good, Price;
 
     TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
     TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
     TableRow row;
 
+    DataBase DBobj;
+
     PopupMenu popup;
 
 
-    public void HeadRow(Context context, TableLayout table, String IDColName, String secondColName,
-                        String thirdColName, String fourthColName, Boolean hidingFirstColumn) {
+    public void HeadRow(Context context,
+                        TableLayout table,
+                        String IDColName,
+                        String secondColName,
+                        String thirdColName,
+                        String fourthColName,
+                        Boolean hidingFirstColumn) {
 
         row = new TableRow(context);
         row.setLayoutParams(tableParams);
@@ -65,18 +75,16 @@ public class TablesBuilding extends Activity {
         if (hidingFirstColumn) ID1.setVisibility(View.GONE);
     }
 
-    public void DisplayExistingTable(final Context context, TableLayout table, String ID, String Date,
-                                     String Good, String Price, Boolean hidingFirstColumn) {
-    //public void DisplayExistingTable(Context context, TableLayout table) {
-        /*this.ID = ID;
-        this.Date = Date;
-        this.Good = Good;
-        this.Price = Price;
 
-        ID = "id";
-        Date = "date";
-        Good = "good";
-        Price = "price";*/
+    public void DisplayExistingTable(final Context context,
+                                     final TableLayout table,
+                                     String ID,
+                                     String Date,
+                                     String Good,
+                                     String Price,
+                                     Boolean hidingFirstColumn) {
+
+        this.context = context;
 
         row = new TableRow(context);
         row.setLayoutParams(tableParams);
@@ -118,14 +126,80 @@ public class TablesBuilding extends Activity {
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
                 v.setBackgroundColor(Color.GRAY);
-                popup = new PopupMenu();
-                popup.PopupInEnterGoods(v, context);
+                showPopupMenu(v);
                 return true;
             }
         });
         registerForContextMenu(row);
+
+       /* popup.setOnDismissListener(new android.widget.PopupMenu.OnDismissListener() {
+
+            @Override
+            public void onDismiss(android.widget.PopupMenu menu) {
+                v.setBackgroundColor(Color.parseColor("#9AFFD180"));
+                v.setBackgroundColor(Color.alpha(70));
+            }
+        });*/
     }
 
+
+    public void showPopupMenu(final View v) {
+        popup = new PopupMenu(context, v);
+        popup.inflate(R.menu.popup_menu);
+
+        TableRow t = (TableRow) v;
+
+        TextView firstTextView = (TextView) t.getChildAt(0);
+        final String IDText1 = firstTextView.getText().toString();
+
+        int clickedRow = Integer.parseInt(IDText1);
+//        DBobj.ShowCommentPopup(clickedRow);
+
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+
+                    case R.id.MENU_EDIT:
+                        /*ifEdition = true;
+                        etDate.setText(dateText);
+                        etGoods.setText(goodText);
+                        etPrice.setText(priceText);*/
+                        break;
+
+                    case R.id.MENU_DELETE:
+                        /*tablelay.removeView(v);
+                        DeleteTableRow();*/
+                        break;
+
+                    case R.id.MENU_COMMENT:
+                        //addComment(EnterGoods.this);
+
+
+                        break;
+
+                    default:
+                        return false;
+                }
+                return false;
+            }
+
+        });
+
+        popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
+
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                v.setBackgroundColor(Color.parseColor("#9AFFD180"));
+                v.setBackgroundColor(Color.alpha(70));
+            }
+        });
+        popup.show();
+
+    }
 
 
 }
