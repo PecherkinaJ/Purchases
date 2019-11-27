@@ -3,14 +3,17 @@ package ru.android.mypurchases;
 import android.app.DatePickerDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -18,10 +21,12 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.Vector;
 
 
 public class EnterGoods extends AppCompatActivity implements View.OnClickListener {
@@ -34,6 +39,7 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
     Button btnCancel;
 
     TableLayout tablelay;
+    TableRow row;
 
     Date dateToday, enterDate;
     String dateToday1;
@@ -44,6 +50,10 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
     SQLiteDatabase db;
 
     TablesBuilding TBobj;
+
+    int tableRowID;
+
+    PopupMenu popup;
 
 
     @Override
@@ -61,7 +71,6 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
         etDate = (EditText) findViewById(R.id.etDate);
 
         tablelay = (TableLayout) findViewById(R.id.tablelay);
-        tablelay.setColumnStretchable(2, true);
 
         sdf = new SimpleDateFormat("dd.MM.yyyy");
         myCalendar = Calendar.getInstance();
@@ -100,16 +109,21 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
         DBobj = new DataBase(this);
         db = DBobj.getReadableDatabase();
 
-        TBobj = new TablesBuilding();
-        TBobj.HeadRow(EnterGoods.this, tablelay, " ID: ", "Дата:",
+        TBobj = new TablesBuilding(DBobj, this, tablelay, " ID: ", "Дата:",
                 "Продукт:", "Цена:", true);
 
-        Log.d("mylogs", "db = " + db);
-        DBobj.DisplayExistingTable(db, EnterGoods.this, tablelay);
+        for (int i=0; i<DBobj.getRowsCount(db); i++) {
+            Vector<String> vectorRows = DBobj.DisplayExistingTable(db, i);
+            //Log.d("mylogs", "Row number " + i + " in DataBse = " + vectorRows);
+            String strID = vectorRows.get(0);
+            String strDate = vectorRows.get(1);
+            String strGood = vectorRows.get(2);
+            String strPrice = vectorRows.get(3);
+            TBobj.DisplayExistingTable(strID, strDate, strGood, strPrice, true);
+        }
 
-        //TBobj.DisplayExistingTable(this, tablelay, "1", "20.11.2019", "Проба", "1");
-        //TBobj.DisplayExistingTable(this, tablelay);
     }
+
 
     public void onClick(View v) {
         switch (v.getId()) {
@@ -158,8 +172,12 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
                 */
 
                 DBobj.FillingDB(dateMS, good, price, "");
-                SQLiteDatabase db = DBobj.getWritableDatabase();
-                DBobj.UpdatingTable(db, this, tablelay);
+                Vector <String> newData = DBobj.UpdatingTable(db);
+                String newStrID = newData.get(0);
+                String newstrDate = newData.get(1);
+                String newstrGood = newData.get(2);
+                String newstrPrice = newData.get(3);
+                TBobj.DisplayExistingTable(newStrID, newstrDate, newstrGood, newstrPrice, true);
 
                 DBobj.proverka(db);
 
@@ -171,5 +189,8 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
             default:
                 break;
         }
+
     }
+
+
 }

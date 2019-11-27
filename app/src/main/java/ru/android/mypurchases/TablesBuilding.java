@@ -2,15 +2,22 @@ package ru.android.mypurchases;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Vector;
 
 public class TablesBuilding extends Activity {
 
@@ -18,18 +25,38 @@ public class TablesBuilding extends Activity {
 
     TextView tvID, tvDate, tvGood, tvPrice;
 
-    TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
-    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+    TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
     TableRow row;
 
-    DataBase DBobj;
-
+    int tableRowID;
     PopupMenu popup;
 
+    int clickedRow;
+    String comment;
 
-    public void HeadRow(Context context,
-                        TableLayout table,
-                        String IDColName,
+    DataBase DBobj;
+    SQLiteDatabase db;
+    TableLayout table;
+
+
+    TablesBuilding(DataBase _db,
+                   Context context,
+                   TableLayout table,
+                   String IDColName,
+                   String secondColName,
+                   String thirdColName,
+                   String fourthColName,
+                   Boolean hidingFirstColumn) {
+        DBobj = _db;
+        db = DBobj.getWritableDatabase();
+        this.table = table;
+        this.context = context;
+        HeadRow(IDColName, secondColName, thirdColName, fourthColName, hidingFirstColumn);
+    }
+
+
+    public void HeadRow(String IDColName,
                         String secondColName,
                         String thirdColName,
                         String fourthColName,
@@ -76,15 +103,11 @@ public class TablesBuilding extends Activity {
     }
 
 
-    public void DisplayExistingTable(final Context context,
-                                     final TableLayout table,
-                                     String ID,
+    public void DisplayExistingTable(String ID,
                                      String Date,
                                      String Good,
                                      String Price,
                                      Boolean hidingFirstColumn) {
-
-        this.context = context;
 
         row = new TableRow(context);
         row.setLayoutParams(tableParams);
@@ -126,24 +149,18 @@ public class TablesBuilding extends Activity {
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
                 v.setBackgroundColor(Color.GRAY);
-                showPopupMenu(v);
+                showPopupMenu(v, table, context);
+
+                tableRowID = table.indexOfChild(v);
                 return true;
             }
         });
         registerForContextMenu(row);
 
-       /* popup.setOnDismissListener(new android.widget.PopupMenu.OnDismissListener() {
-
-            @Override
-            public void onDismiss(android.widget.PopupMenu menu) {
-                v.setBackgroundColor(Color.parseColor("#9AFFD180"));
-                v.setBackgroundColor(Color.alpha(70));
-            }
-        });*/
     }
 
 
-    public void showPopupMenu(final View v) {
+    public void showPopupMenu(final View v, final TableLayout table, Context context) {
         popup = new PopupMenu(context, v);
         popup.inflate(R.menu.popup_menu);
 
@@ -152,9 +169,8 @@ public class TablesBuilding extends Activity {
         TextView firstTextView = (TextView) t.getChildAt(0);
         final String IDText1 = firstTextView.getText().toString();
 
-        int clickedRow = Integer.parseInt(IDText1);
-//        DBobj.ShowCommentPopup(clickedRow);
-
+        clickedRow = Integer.parseInt(IDText1);
+        Log.d("mylogs", "clicked row = " + clickedRow);
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -171,12 +187,13 @@ public class TablesBuilding extends Activity {
                         break;
 
                     case R.id.MENU_DELETE:
-                        /*tablelay.removeView(v);
-                        DeleteTableRow();*/
+                        DeleteTableRow(table);
+                        DBobj.DeleteFromDB(clickedRow);
                         break;
 
                     case R.id.MENU_COMMENT:
-                        //addComment(EnterGoods.this);
+                        comment = DBobj.ShowCommentPopup(clickedRow);   //null!!!???
+                        AddComment();
 
 
                         break;
@@ -199,6 +216,31 @@ public class TablesBuilding extends Activity {
         });
         popup.show();
 
+    }
+
+    public void AddComment() {
+        final EditText taskEditText = new EditText(context);
+
+        taskEditText.setText(comment);
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("Комментарий")
+                .setMessage("Добавьте комментарий в поле ниже")
+                .setView(taskEditText)
+                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = taskEditText.getText().toString();
+                        DBobj.UpdateComment(clickedRow, task);
+                    }
+                })
+                .setNegativeButton("Отмена", null)
+                .create();
+        dialog.show();
+    }
+
+    public void DeleteTableRow(TableLayout table) {
+        table.removeViewAt(tableRowID);
     }
 
 

@@ -9,9 +9,10 @@ import android.util.Log;
 import android.widget.TableLayout;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.Vector;
 
 
 public class DataBase extends SQLiteOpenHelper {
@@ -19,11 +20,12 @@ public class DataBase extends SQLiteOpenHelper {
     String logs = "MYLOGS";
     ContentValues cv = new ContentValues();
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-    TablesBuilding TBobj = new TablesBuilding();
+    SQLiteDatabase db;
 
 
     public DataBase(Context context) {
         super(context, "DataTable", null, 1);
+        db = this.getWritableDatabase();
     }
 
     @Override
@@ -47,31 +49,46 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public void DisplayExistingTable(SQLiteDatabase db, Context context, TableLayout table) {
+    public int getRowsCount(SQLiteDatabase db) {
+        long dateToday = System.currentTimeMillis();
+        long weekAgo = dateToday - 7 * 1000 * 60 * 60 * 24;
+        Cursor cursor = db.rawQuery("SELECT id, date, good, price FROM myPurch " +
+                " WHERE date >= " + weekAgo +
+                " AND date <= " + dateToday, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+
+    public Vector<String> DisplayExistingTable(SQLiteDatabase db, int num) {
+
+        Vector<String> DBRow = new Vector<>(4);
 
         long dateToday = System.currentTimeMillis();
-        long weekAgo = dateToday - 604800000;
-        Cursor c = db.rawQuery("SELECT * FROM myPurch " +
+        long weekAgo = dateToday - 7 * 1000 * 60 * 60 * 24;
+        Cursor c = db.rawQuery("SELECT id, date, good, price FROM myPurch " +
                 " WHERE date >= " + weekAgo +
                 " AND date <= " + dateToday, null);
 
-        if (c.moveToLast()) {
-            do {
-                long a = c.getLong(c.getColumnIndex("date"));
-                GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
-                calendar.setTimeInMillis(a);
+        if (c.moveToPosition(num)) {
+            long a = c.getLong(c.getColumnIndex("date"));
+            GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
+            calendar.setTimeInMillis(a);
 
-                String strID = c.getString(c.getColumnIndex("id"));
-                String strDate = sdf.format(calendar.getTime());
-                String strGood = c.getString(c.getColumnIndex("good"));
-                String strPrice = c.getString(c.getColumnIndex("price"));
+            String strID = c.getString(c.getColumnIndex("id"));
+            String strDate = sdf.format(calendar.getTime());
+            String strGood = c.getString(c.getColumnIndex("good"));
+            String strPrice = c.getString(c.getColumnIndex("price"));
 
-                TBobj.DisplayExistingTable(context, table, strID, strDate, strGood, strPrice, true);
-
-            } while (c.moveToPrevious());
+            DBRow.add(strID);
+            DBRow.add(strDate);
+            DBRow.add(strGood);
+            DBRow.add(strPrice);
         }
         c.close();
+        return DBRow;
     }
+
 
 
     public void FillingDB(long insertData, String insertGood, float insertPrice, String comment) {
@@ -83,47 +100,66 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public void UpdatingTable(SQLiteDatabase db, Context context, TableLayout table) {
+    public Vector UpdatingTable(SQLiteDatabase db) {
         Cursor c = db.query("mypurch", null, null, null, null, null, null);
 
+        Vector <String> newValueArray = new Vector<>(4);
+
         if (c.moveToLast()) {
-            do {
-                long a = c.getLong(c.getColumnIndex("date"));
-                GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
-                calendar.setTimeInMillis(a);
+            long a = c.getLong(c.getColumnIndex("date"));
+            GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
+            calendar.setTimeInMillis(a);
 
-                String strID = c.getString(c.getColumnIndex("id"));
-                String strDate = sdf.format(calendar.getTime());
-                String strGood = c.getString(c.getColumnIndex("good"));
-                String strPrice = c.getString(c.getColumnIndex("price"));
+            String strID = c.getString(c.getColumnIndex("id"));
+            String strDate = sdf.format(calendar.getTime());
+            String strGood = c.getString(c.getColumnIndex("good"));
+            String strPrice = c.getString(c.getColumnIndex("price"));
 
-                TBobj.DisplayExistingTable(context, table, strID, strDate, strGood, strPrice, true);
-
-            } while (c.isClosed());
+            newValueArray.add(strID);
+            newValueArray.add(strDate);
+            newValueArray.add(strGood);
+            newValueArray.add(strPrice);
         }
         c.close();
+        return newValueArray;
     }
 
 
-    public void ShowCommentPopup(int clickedRow) {
-        Cursor c = this.getWritableDatabase().rawQuery("SELECT * FROM myPurch WHERE ID = " + clickedRow, null);
+    public String ShowCommentPopup(int clickedRow) {
+    //public String ShowCommentPopup(int clickedRow) {
+        Log.d("mylogs", "id = " + clickedRow);
 
+        Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE ID = " + clickedRow, null);
+
+        String commentText = new String();
         if (c.moveToFirst()) {
-            do {
-                String IDText = c.getString(c.getColumnIndex("id"));
+            String IDText = c.getString(c.getColumnIndex("id"));
 
-                long a = c.getLong(c.getColumnIndex("date"));
-                GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
-                calendar.setTimeInMillis(a);
-                String dateText = sdf.format(calendar.getTime());
+            long a = c.getLong(c.getColumnIndex("date"));
+            GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
+            calendar.setTimeInMillis(a);
+            String dateText = sdf.format(calendar.getTime());
 
-                String goodText = c.getString(c.getColumnIndex("good"));
-                String priceText = c.getString(c.getColumnIndex("price"));
+            String goodText = c.getString(c.getColumnIndex("good"));
+            String priceText = c.getString(c.getColumnIndex("price"));
+            commentText = c.getString(c.getColumnIndex("comment"));
 
-                Log.d(logs, "id = " + IDText + ", date = " + dateText + ", good = " + goodText + ", price = " + priceText);
-
-            } while (c.moveToNext());
+            //Log.d(logs, "id = " + IDText + ", date = " + dateText + ", good = " + goodText + ", price = " + priceText);
         }
+        c.close();
+        return commentText;
+    }
+
+    public void UpdateComment(int clickedRow, String task) {
+
+        cv.put("comment", task);
+        int updCount = db.update("myPurch", cv, "id = " + clickedRow, null);
+        Log.d(logs, "updated rows count = " + updCount + ", добавлено: " + task);
+    }
+
+    public void DeleteFromDB(int clickedRow) {
+        int delCount = db.delete("myPurch", "id = " + clickedRow, null);
+        Log.d(logs, "deleted rows count = " + delCount);
     }
 
 
