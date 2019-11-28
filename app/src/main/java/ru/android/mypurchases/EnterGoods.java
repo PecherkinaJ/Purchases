@@ -47,14 +47,9 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
     Calendar myCalendar;
 
     DataBase DBobj;
-    SQLiteDatabase db;
+    //SQLiteDatabase db;
 
     TablesBuilding TBobj;
-
-    int tableRowID;
-
-    PopupMenu popup;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,20 +102,9 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
 
 
         DBobj = new DataBase(this);
-        db = DBobj.getReadableDatabase();
 
         TBobj = new TablesBuilding(DBobj, this, tablelay, " ID: ", "Дата:",
                 "Продукт:", "Цена:", true);
-
-        for (int i=0; i<DBobj.getRowsCount(db); i++) {
-            Vector<String> vectorRows = DBobj.DisplayExistingTable(db, i);
-            //Log.d("mylogs", "Row number " + i + " in DataBse = " + vectorRows);
-            String strID = vectorRows.get(0);
-            String strDate = vectorRows.get(1);
-            String strGood = vectorRows.get(2);
-            String strPrice = vectorRows.get(3);
-            TBobj.DisplayExistingTable(strID, strDate, strGood, strPrice, true);
-        }
 
     }
 
@@ -137,23 +121,16 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
                     return;
                 }
 
-                String date1 = etDate.getText().toString();
                 String good = etGoods.getText().toString();
                 Float price = Float.parseFloat(etPrice.getText().toString());
                 long dateMS = 0;
                 try {
-                    Date date;
-                    date = new SimpleDateFormat("dd.MM.yyyy").parse(date1);
-                    dateMS = date.getTime();
+                    enterDate = new SimpleDateFormat("dd.MM.yyyy").parse(etDate.getText().toString());
+                    dateMS = enterDate.getTime();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                try {
-                    enterDate = new SimpleDateFormat("dd.MM.yyyy").parse(etDate.getText().toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
                 if (dateToday.before(enterDate)) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Введите корректную дату", Toast.LENGTH_LONG);
@@ -161,25 +138,35 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
                     return;
                 }
 
-                /*
-                if (ifEdition == false) {
-                    fillingLayout();
-                    break;
-                } else if (ifEdition) {
-                    EditTableRow();
-                    ifEdition = false;
+                if (TBobj.ifEdition == true) {
+                    String _date = etDate.getText().toString();
+                    String _good = etGoods.getText().toString();
+                    Float _price = Float.parseFloat(etPrice.getText().toString());
+                    long _dateMS = 0;
+                    try {
+                        Date date = new SimpleDateFormat("dd.MM.yyyy").parse(_date);
+                        _dateMS = date.getTime();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    DBobj.UpdateDB(_dateMS, _good, _price);
+
+                    TBobj.RecreatingRow();
+
+                    TBobj.ifEdition = false;
+                } else {
+
+
+                    DBobj.FillingDB(dateMS, good, price, "");
+                    Vector<String> newData = DBobj.UpdatingTable();
+                    String newStrID = newData.get(0);
+                    String newstrDate = newData.get(1);
+                    String newstrGood = newData.get(2);
+                    String newstrPrice = newData.get(3);
+                    TBobj.DisplayExistingTable(newStrID, newstrDate, newstrGood, newstrPrice, true, 1);
+
+                    DBobj.proverka();
                 }
-                */
-
-                DBobj.FillingDB(dateMS, good, price, "");
-                Vector <String> newData = DBobj.UpdatingTable(db);
-                String newStrID = newData.get(0);
-                String newstrDate = newData.get(1);
-                String newstrGood = newData.get(2);
-                String newstrPrice = newData.get(3);
-                TBobj.DisplayExistingTable(newStrID, newstrDate, newstrGood, newstrPrice, true);
-
-                DBobj.proverka(db);
 
             case R.id.btnCancel:
                 etGoods.setText("");
@@ -190,6 +177,17 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
                 break;
         }
 
+    }
+
+    public void EditionTable() {
+
+        if (TBobj.ifEdition) {
+            int clickedRow = TBobj.EditionalRow();
+            Vector<String> editVector = DBobj.GetDataToEdition(clickedRow);
+            etDate.setText(editVector.get(1));
+            etGoods.setText(editVector.get(2));
+            etPrice.setText(editVector.get(3));
+        }
     }
 
 

@@ -16,8 +16,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Vector;
+
 
 public class TablesBuilding extends Activity {
 
@@ -34,6 +34,7 @@ public class TablesBuilding extends Activity {
 
     int clickedRow;
     String comment;
+    Boolean ifEdition = false;
 
     DataBase DBobj;
     SQLiteDatabase db;
@@ -53,6 +54,18 @@ public class TablesBuilding extends Activity {
         this.table = table;
         this.context = context;
         HeadRow(IDColName, secondColName, thirdColName, fourthColName, hidingFirstColumn);
+        DisplayTable();
+        }
+
+    public void DisplayTable() {
+        for (int i=0; i<DBobj.getRowsCount(); i++) {
+            Vector<String> vectorRows = DBobj.DisplayExistingTable(i);
+            String strID = vectorRows.get(0);
+            String strDate = vectorRows.get(1);
+            String strGood = vectorRows.get(2);
+            String strPrice = vectorRows.get(3);
+            DisplayExistingTable(strID, strDate, strGood, strPrice, true, 1);
+        }
     }
 
 
@@ -107,7 +120,8 @@ public class TablesBuilding extends Activity {
                                      String Date,
                                      String Good,
                                      String Price,
-                                     Boolean hidingFirstColumn) {
+                                     Boolean hidingFirstColumn,
+                                     int rowNumber) {
 
         row = new TableRow(context);
         row.setLayoutParams(tableParams);
@@ -140,7 +154,7 @@ public class TablesBuilding extends Activity {
         row.addView(tvGood);
         row.addView(tvPrice);
 
-        table.addView(row, 1);
+        table.addView(row, rowNumber);
         if (hidingFirstColumn) tvID.setVisibility(View.GONE);
 
         row.setOnLongClickListener(new View.OnLongClickListener() {
@@ -160,7 +174,7 @@ public class TablesBuilding extends Activity {
     }
 
 
-    public void showPopupMenu(final View v, final TableLayout table, Context context) {
+    public void showPopupMenu(final View v, final TableLayout table, final Context context) {
         popup = new PopupMenu(context, v);
         popup.inflate(R.menu.popup_menu);
 
@@ -180,10 +194,10 @@ public class TablesBuilding extends Activity {
                 switch (item.getItemId()) {
 
                     case R.id.MENU_EDIT:
-                        /*ifEdition = true;
-                        etDate.setText(dateText);
-                        etGoods.setText(goodText);
-                        etPrice.setText(priceText);*/
+                        ifEdition = true;
+                        EnterGoods EG = (EnterGoods)context;
+                        EG.EditionTable();
+                        //ifEdition =  false;
                         break;
 
                     case R.id.MENU_DELETE:
@@ -192,7 +206,7 @@ public class TablesBuilding extends Activity {
                         break;
 
                     case R.id.MENU_COMMENT:
-                        comment = DBobj.ShowCommentPopup(clickedRow);   //null!!!???
+                        comment = DBobj.ShowCommentPopup(clickedRow);
                         AddComment();
 
 
@@ -243,5 +257,18 @@ public class TablesBuilding extends Activity {
         table.removeViewAt(tableRowID);
     }
 
+    public int EditionalRow() {
+        return clickedRow;
+    }
+
+    public void RecreatingRow(){
+        Vector<String> recreatedDB = DBobj.RecreatedRow();
+        table.removeViewAt(tableRowID);
+        String strID = recreatedDB.get(0);
+        String strDate = recreatedDB.get(1);
+        String strGood = recreatedDB.get(2);
+        String strPrice = recreatedDB.get(3);
+        DisplayExistingTable(strID, strDate, strGood, strPrice, true, tableRowID);
+    }
 
 }

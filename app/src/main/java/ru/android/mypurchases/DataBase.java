@@ -21,6 +21,7 @@ public class DataBase extends SQLiteOpenHelper {
     ContentValues cv = new ContentValues();
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     SQLiteDatabase db;
+    int rowID;
 
 
     public DataBase(Context context) {
@@ -49,7 +50,7 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public int getRowsCount(SQLiteDatabase db) {
+    public int getRowsCount() {
         long dateToday = System.currentTimeMillis();
         long weekAgo = dateToday - 7 * 1000 * 60 * 60 * 24;
         Cursor cursor = db.rawQuery("SELECT id, date, good, price FROM myPurch " +
@@ -60,7 +61,7 @@ public class DataBase extends SQLiteOpenHelper {
         return count;
     }
 
-    public Vector<String> DisplayExistingTable(SQLiteDatabase db, int num) {
+    public Vector DisplayExistingTable(int num) {
 
         Vector<String> DBRow = new Vector<>(4);
 
@@ -90,7 +91,6 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-
     public void FillingDB(long insertData, String insertGood, float insertPrice, String comment) {
         cv.put("date", insertData);
         cv.put("good", insertGood);
@@ -100,7 +100,7 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public Vector UpdatingTable(SQLiteDatabase db) {
+    public Vector UpdatingTable() {
         Cursor c = db.query("mypurch", null, null, null, null, null, null);
 
         Vector <String> newValueArray = new Vector<>(4);
@@ -129,9 +129,38 @@ public class DataBase extends SQLiteOpenHelper {
     //public String ShowCommentPopup(int clickedRow) {
         Log.d("mylogs", "id = " + clickedRow);
 
-        Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE ID = " + clickedRow, null);
+        rowID = clickedRow;
+
+        Cursor c = db.rawQuery("SELECT id, comment FROM myPurch WHERE ID = " + rowID, null);
 
         String commentText = new String();
+        if (c.moveToFirst()) {
+            commentText = c.getString(c.getColumnIndex("comment"));
+        }
+        c.close();
+        return commentText;
+    }
+
+
+    public void UpdateComment(int clickedRow, String task) {
+        rowID = clickedRow;
+        cv.put("comment", task);
+        int updCount = db.update("myPurch", cv, "id = " + rowID, null);
+        Log.d(logs, "updated rows count = " + updCount + ", добавлено: " + task);
+    }
+
+    public void UpdateDB(long date, String good, float price) {
+        cv.put("date", date);
+        cv.put("good", good);
+        cv.put("price", price);
+        db.update("myPurch", cv, "id = " + rowID, null);
+    }
+
+    public Vector RecreatedRow(/*int clickedRow*/){
+        //rowID = clickedRow;
+
+        Vector<String> updatedDBRow= new Vector<>();
+        Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE ID = " + rowID, null);
         if (c.moveToFirst()) {
             String IDText = c.getString(c.getColumnIndex("id"));
 
@@ -142,28 +171,47 @@ public class DataBase extends SQLiteOpenHelper {
 
             String goodText = c.getString(c.getColumnIndex("good"));
             String priceText = c.getString(c.getColumnIndex("price"));
-            commentText = c.getString(c.getColumnIndex("comment"));
 
-            //Log.d(logs, "id = " + IDText + ", date = " + dateText + ", good = " + goodText + ", price = " + priceText);
+            updatedDBRow.add(0, IDText);
+            updatedDBRow.add(1, dateText);
+            updatedDBRow.add(2, goodText) ;
+            updatedDBRow.add(3, priceText);
         }
         c.close();
-        return commentText;
+        return updatedDBRow;
     }
 
-    public void UpdateComment(int clickedRow, String task) {
-
-        cv.put("comment", task);
-        int updCount = db.update("myPurch", cv, "id = " + clickedRow, null);
-        Log.d(logs, "updated rows count = " + updCount + ", добавлено: " + task);
-    }
 
     public void DeleteFromDB(int clickedRow) {
-        int delCount = db.delete("myPurch", "id = " + clickedRow, null);
+        rowID = clickedRow;
+        int delCount = db.delete("myPurch", "id = " + rowID, null);
         Log.d(logs, "deleted rows count = " + delCount);
     }
 
 
-    protected void proverka(SQLiteDatabase db) {
+    public Vector GetDataToEdition(int clickedRow) {
+        rowID = clickedRow;
+        Vector<String> editVector = new Vector<>();
+        Cursor c = db.rawQuery("SELECT id, date, good, price FROM myPurch WHERE id = " + rowID, null);
+        if (c.moveToFirst()) {
+            long a = c.getLong(c.getColumnIndex("date"));
+            GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
+            calendar.setTimeInMillis(a);
+
+            String strID = c.getString(c.getColumnIndex("id"));
+            String strDate = sdf.format(calendar.getTime());
+            String strGood = c.getString(c.getColumnIndex("good"));
+            String strPrice = c.getString(c.getColumnIndex("price"));
+
+            editVector.add(strID);
+            editVector.add(strDate);
+            editVector.add(strGood);
+            editVector.add(strPrice);
+        }
+        return editVector;
+    }
+
+    protected void proverka() {
         Log.d(logs, "--- Rows in mytable: ---");
         Cursor c = db.query("myPurch", null, null, null, null, null, null);
 
