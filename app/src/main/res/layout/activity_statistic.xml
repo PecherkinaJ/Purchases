@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbarStyle="insideInset"
+    android:scrollbars="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="117dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Выполнить поиск:" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="63dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Сортировать по:" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <SearchView
+            android:id="@+id/svSearch"
+            android:layout_width="197dp"
+            android:layout_height="34dp"
+            android:queryHint="Поиск по названию продукта">
+
+        </SearchView>
+
+        <Spinner
+            android:id="@+id/spinSort"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contextClickable="true" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:orientation="horizontal"
+        android:padding="3dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="71dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Покупки за даты:" />
+
+        <EditText
+            android:id="@+id/etDateBuy"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:hint="Начало периода"
+            android:inputType="date"
+            android:textSize="14sp"
+            android:focusable="false"/>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="26dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0" />
+
+        <EditText
+            android:id="@+id/etDateBuyEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:hint="Конец периода"
+            android:inputType="date"
+            android:textSize="14sp"
+            android:focusable="false"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Покупки в цене" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="21dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="от:" />
+
+        <EditText
+            android:id="@+id/etMoreExpensive"
+            android:layout_width="91dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:ems="10"
+            android:inputType="numberDecimal" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="до:" />
+
+        <EditText
+            android:id="@+id/etLessExpensive"
+            android:layout_width="149dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:ems="10"
+            android:inputType="numberDecimal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnShowTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Показать таблицу"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnShowGraph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Показать график"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TableLayout
+            android:id="@+id/tableTotal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:divider="@drawable/ic_launcher_background"
+            android:stretchColumns="2" />
+    </ScrollView>
+
+</LinearLayout>

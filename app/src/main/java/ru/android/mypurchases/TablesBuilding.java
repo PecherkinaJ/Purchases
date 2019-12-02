@@ -37,7 +37,6 @@ public class TablesBuilding extends Activity {
     Boolean ifEdition = false;
 
     DataBase DBobj;
-    SQLiteDatabase db;
     TableLayout table;
 
 
@@ -50,15 +49,23 @@ public class TablesBuilding extends Activity {
                    String fourthColName,
                    Boolean hidingFirstColumn) {
         DBobj = _db;
-        db = DBobj.getWritableDatabase();
         this.table = table;
         this.context = context;
         HeadRow(IDColName, secondColName, thirdColName, fourthColName, hidingFirstColumn);
-        DisplayTable();
-        }
+        DisplayTableEG();
+    }
 
-    public void DisplayTable() {
-        for (int i=0; i<DBobj.getRowsCount(); i++) {
+
+    TablesBuilding(Context context,
+                   DataBase _db,
+                   TableLayout table) {
+        DBobj = _db;
+        this.table = table;
+        this.context = context;
+    }
+
+    public void DisplayTableEG() {
+        for (int i=0; i<DBobj.getRowsCountEG(); i++) {
             Vector<String> vectorRows = DBobj.DisplayExistingTable(i);
             String strID = vectorRows.get(0);
             String strDate = vectorRows.get(1);
@@ -164,7 +171,7 @@ public class TablesBuilding extends Activity {
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
                 v.setBackgroundColor(Color.GRAY);
-                showPopupMenu(v, table, context);
+                showPopupMenuEG(v, table, context);
 
                 tableRowID = table.indexOfChild(v);
                 return true;
@@ -175,7 +182,7 @@ public class TablesBuilding extends Activity {
     }
 
 
-    public void showPopupMenu(final View v, final TableLayout table, final Context context) {
+    public void showPopupMenuEG(final View v, final TableLayout table, final Context context) {
         popup = new PopupMenu(context, v);
         popup.inflate(R.menu.popup_menu);
 
@@ -270,6 +277,65 @@ public class TablesBuilding extends Activity {
         String strGood = recreatedDB.get(2);
         String strPrice = recreatedDB.get(3);
         DisplayExistingTable(strID, strDate, strGood, strPrice, true, tableRowID);
+    }
+
+    public void StatTableQueries(float flExpDown,
+                                 float flExpTop,
+                                 long startDateLong,
+                                 long endDateLong,
+                                 String svQuery,
+                                 String orderBy,
+                                 boolean hidingFirstColumn){
+        Vector <String> getVectForQueries = DBobj.TableOfQueries(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy);
+
+        row = new TableRow(context);
+        row.setLayoutParams(tableParams);
+
+        tvID = new TextView(context);
+        tvDate = new TextView(context);
+        tvGood = new TextView(context);
+        tvPrice = new TextView(context);
+        tvID.setLayoutParams(rowParams);
+        tvDate.setLayoutParams(rowParams);
+        tvGood.setLayoutParams(rowParams);
+        tvPrice.setLayoutParams(rowParams);
+
+        tvID.setTextSize(1);
+        tvDate.setTextSize(17);
+        tvDate.setPadding(5, 5, 5, 20);
+        tvGood.setTextSize(18);
+        tvGood.setPadding(5, 5, 5, 20);
+        tvPrice.setTextSize(18);
+        tvPrice.setPadding(35, 5, 15, 20);
+        tvPrice.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
+
+        /*tvID.setText(ID);
+        tvDate.setText(Date);
+        tvGood.setText(Good);
+        tvPrice.setText(Price);*/
+
+        row.addView(tvID);
+        row.addView(tvDate);
+        row.addView(tvGood);
+        row.addView(tvPrice);
+
+        //table.addView(row, rowNumber);
+        if (hidingFirstColumn) tvID.setVisibility(View.GONE);
+
+        row.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO Auto-generated method stub
+                v.setBackgroundColor(Color.GRAY);
+                //showPopupMenuEG(v, table, context);
+
+                tableRowID = table.indexOfChild(v);
+                return true;
+            }
+        });
+        registerForContextMenu(row);
+
     }
 
 }

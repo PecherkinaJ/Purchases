@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         GoodIntent = new Intent(this, EnterGoods.class);
-        //Statistic = new Intent(this, Statistic.class);
+        Statistic = new Intent(this, Statistic.class);
         //Preferenses = new Intent(this, Preferenses.class);
         //FuturePurchases = new Intent(this, FuturePurchases.class);
 
@@ -36,12 +36,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         goodent.setOnClickListener(this);
 
         /*pref = (Button) findViewById(R.id.pref);
-        pref.setOnClickListener(this);
+        pref.setOnClickListener(this); */
 
         stat = (Button) findViewById(R.id.stat);
         stat.setOnClickListener(this);
 
-        futPurch = (Button) findViewById(R.id.futPurch);
+        /*futPurch = (Button) findViewById(R.id.futPurch);
         futPurch.setOnClickListener(this);
 */
     }
@@ -52,10 +52,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.goodent:
                 startActivity(GoodIntent);
                 break;
-            /*case R.id.stat:
+            case R.id.stat:
                 startActivity(Statistic);
                 break;
-            case R.id.pref:
+           /* case R.id.pref:
                 startActivity(Preferenses);
                 break;
             case R.id.futPurch:

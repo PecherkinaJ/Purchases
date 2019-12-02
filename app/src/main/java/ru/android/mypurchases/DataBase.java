@@ -48,7 +48,7 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public int getRowsCount() {
+    public int getRowsCountEG() {
         long dateToday = System.currentTimeMillis();
         long weekAgo = dateToday - 7 * 1000 * 60 * 60 * 24;
         Cursor cursor = db.rawQuery("SELECT id, date, good, price FROM myPurch " +
@@ -58,6 +58,7 @@ public class DataBase extends SQLiteOpenHelper {
         cursor.close();
         return count;
     }
+
 
     public Vector DisplayExistingTable(int num) {
 
@@ -147,12 +148,14 @@ public class DataBase extends SQLiteOpenHelper {
         Log.d(logs, "updated rows count = " + updCount + ", добавлено: " + task);
     }
 
+
     public void UpdateDB(long date, String good, float price) {
         cv.put("date", date);
         cv.put("good", good);
         cv.put("price", price);
         db.update("myPurch", cv, "id = " + rowID, null);
     }
+
 
     public Vector RecreatedRow(){
         Vector<String> updatedDBRow= new Vector<>();
@@ -207,24 +210,35 @@ public class DataBase extends SQLiteOpenHelper {
         return editVector;
     }
 
-    protected void proverka() {
-        Log.d(logs, "--- Rows in mytable: ---");
-        Cursor c = db.query("myPurch", null, null, null, null, null, null);
 
+    public Vector TableOfQueries(float flExpDown,
+                                 float flExpTop,
+                                 long startDateLong,
+                                 long endDateLong,
+                                 String svQuery,
+                                 String orderBy){
+
+        Vector<String> vectQuery = new Vector<>();
+        Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE PRICE >=" + flExpDown + " AND PRICE <=" + flExpTop + "  "
+                + "and date >= " + startDateLong + " and date <= " + endDateLong + " AND GOOD LIKE '%" + svQuery + "%' " +
+                " ORDER BY " + orderBy, null);
         if (c.moveToFirst()) {
-            int idColIndex = c.getColumnIndex("date");
-            int nameColIndex = c.getColumnIndex("good");
-            int emailColIndex = c.getColumnIndex("price");
+            long a = c.getLong(c.getColumnIndex("date"));
+            GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
+            calendar.setTimeInMillis(a);
 
-            do {
-                Log.d(logs,
-                        "date = " + c.getInt(idColIndex) +
-                                ", good = " + c.getString(nameColIndex) +
-                                ", price = " + c.getString(emailColIndex));
-            } while (c.moveToNext());
-        } else
-            Log.d(logs, "0 rows");
-        c.close();
+            String strID = c.getString(c.getColumnIndex("id"));
+            String strDate = sdf.format(calendar.getTime());
+            String strGood = c.getString(c.getColumnIndex("good"));
+            String strPrice = c.getString(c.getColumnIndex("price"));
+
+            vectQuery.add(strID);
+            vectQuery.add(strDate);
+            vectQuery.add(strGood);
+            vectQuery.add(strPrice);
+        }
+        return vectQuery;
     }
+
 
 }
