@@ -25,8 +25,8 @@ public class TablesBuilding extends Activity {
 
     TextView tvID, tvDate, tvGood, tvPrice;
 
-    TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
+    TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT);
+    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT);
     TableRow row;
 
     int tableRowID;
@@ -100,6 +100,7 @@ public class TablesBuilding extends Activity {
         price1.setTextSize(23);
         price1.setPadding(25, 5, 25, 5);
         price1.setTypeface(null, Typeface.BOLD_ITALIC);
+        price1.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
 
         ID1.setText(IDColName);
         date1.setText(secondColName);
@@ -135,14 +136,14 @@ public class TablesBuilding extends Activity {
         tvGood.setLayoutParams(rowParams);
         tvPrice.setLayoutParams(rowParams);
 
-        tvID.setTextSize(15);
-        tvID.setPadding(5, 5, 25, 5);
-        tvDate.setTextSize(20);
-        tvDate.setPadding(25, 5, 25, 5);
-        tvGood.setTextSize(20);
-        tvGood.setPadding(25, 5, 25, 5);
-        tvPrice.setTextSize(20);
-        tvPrice.setPadding(25, 5, 25, 5);
+        tvID.setTextSize(1);
+        tvDate.setTextSize(17);
+        tvDate.setPadding(5, 5, 5, 20);
+        tvGood.setTextSize(18);
+        tvGood.setPadding(5, 5, 5, 20);
+        tvPrice.setTextSize(18);
+        tvPrice.setPadding(35, 5, 15, 20);
+        tvPrice.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
 
         tvID.setText(ID);
         tvDate.setText(Date);

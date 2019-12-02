@@ -1,31 +1,20 @@
 package ru.android.mypurchases;
 
 import android.app.DatePickerDialog;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.PopupMenu;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 import java.util.Vector;
 
 
@@ -39,7 +28,6 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
     Button btnCancel;
 
     TableLayout tablelay;
-    TableRow row;
 
     Date dateToday, enterDate;
     String dateToday1;
@@ -47,7 +35,6 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
     Calendar myCalendar;
 
     DataBase DBobj;
-    //SQLiteDatabase db;
 
     TablesBuilding TBobj;
 
@@ -105,6 +92,9 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
 
         TBobj = new TablesBuilding(DBobj, this, tablelay, " ID: ", "Дата:",
                 "Продукт:", "Цена:", true);
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "Показаны данные за последнюю неделю", Toast.LENGTH_LONG);
+        toast.show();
 
     }
 
@@ -146,17 +136,16 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
                     try {
                         Date date = new SimpleDateFormat("dd.MM.yyyy").parse(_date);
                         _dateMS = date.getTime();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    } catch (ParseException e) { e.printStackTrace(); }
+
                     DBobj.UpdateDB(_dateMS, _good, _price);
-
                     TBobj.RecreatingRow();
-
                     TBobj.ifEdition = false;
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Изменения сохранены", Toast.LENGTH_LONG);
+                    toast.show();
+
                 } else {
-
-
                     DBobj.FillingDB(dateMS, good, price, "");
                     Vector<String> newData = DBobj.UpdatingTable();
                     String newStrID = newData.get(0);
@@ -164,8 +153,6 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
                     String newstrGood = newData.get(2);
                     String newstrPrice = newData.get(3);
                     TBobj.DisplayExistingTable(newStrID, newstrDate, newstrGood, newstrPrice, true, 1);
-
-                    DBobj.proverka();
                 }
 
             case R.id.btnCancel:
@@ -179,6 +166,7 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
 
     }
 
+
     public void EditionTable() {
 
         if (TBobj.ifEdition) {
@@ -189,6 +177,5 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
             etPrice.setText(editVector.get(3));
         }
     }
-
 
 }

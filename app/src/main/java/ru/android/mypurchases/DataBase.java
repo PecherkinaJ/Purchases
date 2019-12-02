@@ -6,10 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.TableLayout;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.Vector;
@@ -69,7 +67,7 @@ public class DataBase extends SQLiteOpenHelper {
         long weekAgo = dateToday - 7 * 1000 * 60 * 60 * 24;
         Cursor c = db.rawQuery("SELECT id, date, good, price FROM myPurch " +
                 " WHERE date >= " + weekAgo +
-                " AND date <= " + dateToday, null);
+                " AND date <= " + dateToday + " ORDER BY date", null);
 
         if (c.moveToPosition(num)) {
             long a = c.getLong(c.getColumnIndex("date"));
@@ -156,9 +154,7 @@ public class DataBase extends SQLiteOpenHelper {
         db.update("myPurch", cv, "id = " + rowID, null);
     }
 
-    public Vector RecreatedRow(/*int clickedRow*/){
-        //rowID = clickedRow;
-
+    public Vector RecreatedRow(){
         Vector<String> updatedDBRow= new Vector<>();
         Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE ID = " + rowID, null);
         if (c.moveToFirst()) {
