@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -121,6 +122,31 @@ public class TablesBuilding extends Activity {
         table.addView(row);
 
         if (hidingFirstColumn) ID1.setVisibility(View.GONE);
+    }
+
+     public void HeadRow(String firstColName,
+                         String secondColName) {
+
+            row = new TableRow(context);
+            row.setLayoutParams(tableParams);
+
+            TextView ID1 = new TextView(context);
+            TextView date1 = new TextView(context);
+            ID1.setLayoutParams(rowParams);
+            date1.setLayoutParams(rowParams);
+            ID1.setTextSize(23);
+            ID1.setPadding(25, 5, 25, 5);
+            ID1.setTypeface(null, Typeface.BOLD_ITALIC);
+            date1.setTextSize(23);
+            date1.setPadding(25, 5, 25, 5);
+            date1.setTypeface(null, Typeface.BOLD_ITALIC);
+
+            ID1.setText(firstColName);
+            date1.setText(secondColName);
+
+            row.addView(ID1);
+            row.addView(date1);
+            table.addView(row);
     }
 
 
@@ -240,6 +266,7 @@ public class TablesBuilding extends Activity {
 
     }
 
+
     public void AddComment() {
         final EditText taskEditText = new EditText(context);
 
@@ -261,13 +288,16 @@ public class TablesBuilding extends Activity {
         dialog.show();
     }
 
+
     public void DeleteTableRow(TableLayout table) {
         table.removeViewAt(tableRowID);
     }
 
+
     public int EditionalRow() {
         return clickedRow;
     }
+
 
     public void RecreatingRow(){
         Vector<String> recreatedDB = DBobj.RecreatedRow();
@@ -279,14 +309,35 @@ public class TablesBuilding extends Activity {
         DisplayExistingTable(strID, strDate, strGood, strPrice, true, tableRowID);
     }
 
-    public void StatTableQueries(float flExpDown,
-                                 float flExpTop,
-                                 long startDateLong,
-                                 long endDateLong,
-                                 String svQuery,
-                                 String orderBy,
-                                 boolean hidingFirstColumn){
-        Vector <String> getVectForQueries = DBobj.TableOfQueries(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy);
+
+
+    public void QueryTableForStat(float flExpDown,
+                                  float flExpTop,
+                                  long startDateLong,
+                                  long endDateLong,
+                                  String svQuery,
+                                  String orderBy) {
+        table.removeAllViews();
+        HeadRow("id", "Дата:", "Продукт:", "Цена:", true);
+        for (int i=0; i<DBobj.getRowsCountStat_query(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy); i++) {
+            Vector <String> getVectForQueries = DBobj.TableOfQueries(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy, i);
+            String strID = getVectForQueries.get(0);
+            String strDate = getVectForQueries.get(1);
+            String strGood = getVectForQueries.get(2);
+            String strPrice = getVectForQueries.get(3);
+            String strComm = getVectForQueries.get(4);
+            StatTableQueries(strID, strDate, strGood, strPrice, strComm, true, 1);
+        }
+    }
+
+
+    public void StatTableQueries(String ID,
+                                 String Date,
+                                 String Good,
+                                 String Price,
+                                 String Comment,
+                                 boolean hidingFirstColumn,
+                                 int tableRowNum){
 
         row = new TableRow(context);
         row.setLayoutParams(tableParams);
@@ -309,18 +360,24 @@ public class TablesBuilding extends Activity {
         tvPrice.setPadding(35, 5, 15, 20);
         tvPrice.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
 
-        /*tvID.setText(ID);
+        tvID.setText(ID);
         tvDate.setText(Date);
         tvGood.setText(Good);
-        tvPrice.setText(Price);*/
+        tvPrice.setText(Price);
 
         row.addView(tvID);
         row.addView(tvDate);
         row.addView(tvGood);
         row.addView(tvPrice);
 
-        //table.addView(row, rowNumber);
+        table.addView(row, tableRowNum);
         if (hidingFirstColumn) tvID.setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(Comment)) {
+            tvDate.setTypeface(null, Typeface.BOLD_ITALIC);
+            tvGood.setTypeface(null, Typeface.BOLD_ITALIC);
+            tvPrice.setTypeface(null, Typeface.BOLD_ITALIC);
+        }
 
         row.setOnLongClickListener(new View.OnLongClickListener() {
 
@@ -328,7 +385,7 @@ public class TablesBuilding extends Activity {
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
                 v.setBackgroundColor(Color.GRAY);
-                //showPopupMenuEG(v, table, context);
+                showPopupQueries(v, context);
 
                 tableRowID = table.indexOfChild(v);
                 return true;
@@ -336,6 +393,147 @@ public class TablesBuilding extends Activity {
         });
         registerForContextMenu(row);
 
+
+    }
+
+    public void showPopupQueries(final View v, final Context context) {
+        popup = new PopupMenu(context, v);
+        popup.inflate(R.menu.popup_stat_query);
+
+        TableRow t = (TableRow) v;
+
+        TextView firstTextView = (TextView) t.getChildAt(0);
+        final String IDText1 = firstTextView.getText().toString();
+
+        clickedRow = Integer.parseInt(IDText1);
+        Log.d("mylogs", "clicked row = " + clickedRow);
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.MENU_COMMENT:
+                        comment = DBobj.ShowCommentPopup(clickedRow);
+                        ShowComment();
+                        break;
+
+                    default:
+                        return false;
+                }
+                return false;
+            }
+
+        });
+
+        popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
+
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                v.setBackgroundColor(Color.parseColor("#9AFFD180"));
+                v.setBackgroundColor(Color.alpha(70));
+            }
+        });
+        popup.show();
+
+    }
+
+
+    public void ShowComment() {
+        final EditText taskEditText = new EditText(context);
+        taskEditText.setText(comment);
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("Комментарий")
+                .setView(taskEditText)
+                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = taskEditText.getText().toString();
+                        DBobj.UpdateComment(clickedRow, task);
+                        Vector<String> recreatedDB = DBobj.RecreatedRow();
+                        table.removeViewAt(tableRowID);
+                        String strID = recreatedDB.get(0);
+                        String strDate = recreatedDB.get(1);
+                        String strGood = recreatedDB.get(2);
+                        String strPrice = recreatedDB.get(3);
+                        StatTableQueries(strID, strDate, strGood, strPrice, task, true, tableRowID);
+                    }
+                })
+                .setNegativeButton("Отмена", null)
+                .create();
+        dialog.show();
+    }
+
+
+    public void TableForEveryDay(long startDateLong, long endDateLong){
+        table.removeAllViews();
+        table.setColumnStretchable(0, true);
+        table.setColumnStretchable(1, true);
+        HeadRow("Дата:", "Общая стоимость:");
+        for (int i=0; i<DBobj.getRowsCountStat_everyday(startDateLong, endDateLong); i++) {
+            Vector <String> getVectForEveryday = DBobj.EveryDayTable(i, startDateLong, endDateLong);
+            String strDate = getVectForEveryday.get(0);
+            String strCost = getVectForEveryday.get(1);
+            StatTableEverySmth(strDate, strCost, 1);
+        }
+    }
+
+
+    public void TableForEveryMonth(){
+        table.removeAllViews();
+        table.setColumnStretchable(0, true);
+        table.setColumnStretchable(1, true);
+        HeadRow("Месяц:", "Потрачено:");
+        for (int i=0; i<DBobj.getRowsCountStat_everymonth(); i++) {
+            Vector <String> getVectForEverymonth = DBobj.EveryMonthTable(i);
+            String strDate = getVectForEverymonth.get(0);
+            String strCost = getVectForEverymonth.get(1);
+            StatTableEverySmth(strDate, strCost, 1);
+        }
+    }
+
+
+    public void TableForEveryPurch(long startDateLong, long endDateLong){
+        table.removeAllViews();
+        table.setColumnStretchable(0, true);
+        table.setColumnStretchable(1, true);
+        HeadRow("Месяц:", "Потрачено:");
+        for (int i=0; i<DBobj.getRowsCountStat_everypurch(startDateLong, endDateLong); i++) {
+            Vector <String> getVectForEverypurch = DBobj.EveryPurchTable(i, startDateLong, endDateLong);
+            String strDate = getVectForEverypurch.get(0);
+            String strCost = getVectForEverypurch.get(1);
+            StatTableEverySmth(strDate, strCost, 1);
+        }
+    }
+
+
+    public void StatTableEverySmth(String firstCol,
+                               String secCol,
+                               int tableRowNum){
+
+        row = new TableRow(context);
+        row.setLayoutParams(tableParams);
+
+        tvID = new TextView(context);
+        tvDate = new TextView(context);
+
+        tvID.setLayoutParams(rowParams);
+        tvDate.setLayoutParams(rowParams);
+
+        tvID.setTextSize(17);
+        tvID.setPadding(5, 5, 5, 20);
+        tvDate.setTextSize(17);
+        tvDate.setPadding(5, 5, 5, 20);
+
+        tvID.setText(firstCol);
+        tvDate.setText(secCol);
+
+        row.addView(tvID);
+        row.addView(tvDate);
+
+        table.addView(row, tableRowNum);
     }
 
 }

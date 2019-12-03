@@ -211,18 +211,34 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
+    public int getRowsCountStat_query(float flExpDown,
+                                      float flExpTop,
+                                      long startDateLong,
+                                      long endDateLong,
+                                      String svQuery,
+                                      String orderBy) {
+        Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE PRICE >=" + flExpDown + " AND PRICE <=" + flExpTop + "  "
+                + "and date >= " + startDateLong + " and date <= " + endDateLong + " AND GOOD LIKE '%" + svQuery + "%' " +
+                " ORDER BY " + orderBy, null);
+        int count = c.getCount();
+        c.close();
+        return count;
+    }
+
+
     public Vector TableOfQueries(float flExpDown,
                                  float flExpTop,
                                  long startDateLong,
                                  long endDateLong,
                                  String svQuery,
-                                 String orderBy){
+                                 String orderBy,
+                                 int num){
 
         Vector<String> vectQuery = new Vector<>();
         Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE PRICE >=" + flExpDown + " AND PRICE <=" + flExpTop + "  "
                 + "and date >= " + startDateLong + " and date <= " + endDateLong + " AND GOOD LIKE '%" + svQuery + "%' " +
-                " ORDER BY " + orderBy, null);
-        if (c.moveToFirst()) {
+                " ORDER BY " + orderBy + " , date", null);
+        if (c.moveToPosition(num)) {
             long a = c.getLong(c.getColumnIndex("date"));
             GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
             calendar.setTimeInMillis(a);
@@ -231,14 +247,103 @@ public class DataBase extends SQLiteOpenHelper {
             String strDate = sdf.format(calendar.getTime());
             String strGood = c.getString(c.getColumnIndex("good"));
             String strPrice = c.getString(c.getColumnIndex("price"));
+            String strComm = c.getString(c.getColumnIndex("comment"));
 
-            vectQuery.add(strID);
-            vectQuery.add(strDate);
-            vectQuery.add(strGood);
-            vectQuery.add(strPrice);
+            vectQuery.add(0, strID);
+            vectQuery.add(1, strDate);
+            vectQuery.add(2, strGood);
+            vectQuery.add(3, strPrice);
+            vectQuery.add(4, strComm);
+
+            Log.d("mylogs", "vector = " + vectQuery);
         }
         return vectQuery;
     }
 
+
+    public int getRowsCountStat_everyday(long startDateLong, long endDateLong) {
+        Cursor c = db.rawQuery("SELECT SUM(PRICE) AS summarize, date, " +
+                " strftime('%d.%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) as totalInDate" +
+                " FROM myPurch " +
+                " WHERE date >= " + startDateLong + " and date <= " + endDateLong +
+                " GROUP BY totalInDate ORDER BY date", null);
+        int count = c.getCount();
+        c.close();
+        return count;
+    }
+
+
+    public int getRowsCountStat_everymonth() {
+        Cursor c = db.rawQuery("SELECT SUM(price) as summarize, date, " +
+                " strftime('%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) " +
+                " AS months " +
+                " FROM myPurch " +
+                " GROUP BY months ORDER BY date", null);
+        int count = c.getCount();
+        c.close();
+        return count;
+    }
+
+
+    public int getRowsCountStat_everypurch(long startDateLong, long endDateLong) {
+        Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from myPurch" +
+                " where date >= " + startDateLong + " and date <= " + endDateLong + " GROUP BY good ORDER BY summarize", null);
+        int count = c.getCount();
+        c.close();
+        return count;
+    }
+
+
+    public Vector EveryDayTable(int num, long startDateLong, long endDateLong){
+
+        Vector<String> everyDayVector = new Vector<>();
+
+        Cursor c = db.rawQuery("SELECT SUM(PRICE) AS summarize, date, " +
+                " strftime('%d.%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) as totalInDate" +
+                " FROM myPurch " +
+                " WHERE date >= " + startDateLong + " and date <= " + endDateLong +
+                " GROUP BY totalInDate ORDER BY date", null);
+        if (c.moveToPosition(num)) {
+            everyDayVector.add(0, c.getString(c.getColumnIndex("totalInDate")));
+            everyDayVector.add(1, c.getString(c.getColumnIndex("summarize")));
+        }
+
+        return everyDayVector;
+    }
+
+
+    public Vector EveryMonthTable(int num){
+
+        Vector<String> everyDayVector = new Vector<>();
+
+        Cursor c = db.rawQuery("SELECT SUM(price) as summarize, date, " +
+                " strftime('%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) " +
+                " AS months " +
+                " FROM myPurch " +
+                " GROUP BY months ORDER BY date", null);
+
+        if (c.moveToPosition(num)) {
+            everyDayVector.add(0, c.getString(c.getColumnIndex("months")));
+            everyDayVector.add(1, c.getString(c.getColumnIndex("summarize")));
+        }
+
+        return everyDayVector;
+    }
+
+
+    public Vector EveryPurchTable(int num, long startDateLong, long endDateLong){
+
+        Vector<String> everyDayVector = new Vector<>();
+
+        Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from myPurch" +
+                " where date >= " + startDateLong + " and date <= " + endDateLong + " GROUP BY good ORDER BY summarize", null);
+
+        if (c.moveToPosition(num)) {
+            everyDayVector.add(0, c.getString(c.getColumnIndex("good")));
+            everyDayVector.add(1, c.getString(c.getColumnIndex("summarize")));
+        }
+
+        return everyDayVector;
+    }
 
 }

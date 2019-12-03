@@ -127,39 +127,27 @@
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Покупки в цене" />
-
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="21dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="от:" />
+            android:text="Покупки в цене:" />
 
         <EditText
             android:id="@+id/etMoreExpensive"
-            android:layout_width="91dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:ems="10"
-            android:inputType="numberDecimal" />
-
-        <TextView
-            android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="до:" />
+            android:layout_weight="3"
+            android:ems="10"
+            android:hint="от"
+            android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/etLessExpensive"
-            android:layout_width="149dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
+            android:layout_weight="3"
             android:ems="10"
+            android:hint="до"
             android:inputType="numberDecimal" />
 
     </LinearLayout>
@@ -211,7 +199,7 @@
             android:layout_height="match_parent"
             android:layout_margin="4dp"
             android:divider="@drawable/ic_launcher_background"
-            android:stretchColumns="2" />
+            android:stretchColumns="1,2,3" />
     </ScrollView>
 
 </LinearLayout>

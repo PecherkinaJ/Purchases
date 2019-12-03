@@ -73,9 +73,6 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
 
-        DBobj = new DataBase(this);
-        TBobj = new TablesBuilding(this, DBobj, tableTotal);
-
         tvTotal = (TextView) findViewById(R.id.tvTotal);
 
         svSearch = (SearchView) findViewById(R.id.svSearch);
@@ -169,6 +166,9 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         tableTotal = (TableLayout) findViewById(R.id.tableTotal);
 
         dateToday = sdf.format(new Date(System.currentTimeMillis()));
+
+        DBobj = new DataBase(this);
+        TBobj = new TablesBuilding(this, DBobj, tableTotal);
     }
 
 
@@ -176,8 +176,10 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnShowTable:
-                Queries();
-
+                if (posOfSpin == 0 || posOfSpin == 1 || posOfSpin == 2) Queries();
+                if (posOfSpin == 3) TotalForEveryDay();
+                if (posOfSpin == 4) TotalForEveryMonth();
+                if (posOfSpin == 5) TotalForEveryPurch();
 
             default:
                 break;
@@ -186,6 +188,7 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         }
 
     }
+
 
     String strDate1;
     String strDate2;
@@ -243,7 +246,75 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
         svQuery = svSearch.getQuery().toString();
 
-        TBobj.StatTableQueries(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy, true);
+        TBobj.QueryTableForStat(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy);
+    }
+
+
+    public void TotalForEveryDay(){
+        if (TextUtils.isEmpty(etDateBuy.getText().toString())) {
+            strDate1 = "01.01.2010";
+        } else {
+            strDate1 = etDateBuy.getText().toString();
+        }
+
+        if (TextUtils.isEmpty(etDateBuyEnd.getText().toString())) {
+            strDate2 = dateToday;
+        } else {
+            strDate2 = etDateBuyEnd.getText().toString();
+        }
+
+        Date startDate = new Date();
+        Date endDate = new Date();
+
+        try {
+            startDate = new SimpleDateFormat("dd.MM.yyyy").parse(strDate1);
+            endDate = new SimpleDateFormat("dd.MM.yyyy").parse(strDate2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        long startDateLong = startDate.getTime();
+        long endDateLong = endDate.getTime() + 86399000;
+
+        TBobj.TableForEveryDay(startDateLong, endDateLong);
+    }
+
+
+    public void TotalForEveryMonth(){
+        TBobj.TableForEveryMonth();
+    }
+
+
+    public void TotalForEveryPurch(){
+        String strDate1;
+        String strDate2;
+
+        if (TextUtils.isEmpty(etDateBuy.getText().toString())) {
+            strDate1 = "01.01.2010";
+        } else {
+            strDate1 = etDateBuy.getText().toString();
+        }
+
+        if (TextUtils.isEmpty(etDateBuyEnd.getText().toString())) {
+            strDate2 = dateToday;
+        } else {
+            strDate2 = etDateBuyEnd.getText().toString();
+        }
+
+        Date startDate = new Date();
+        Date endDate = new Date();
+
+        try {
+            startDate = new SimpleDateFormat("dd.MM.yyyy").parse(strDate1);
+            endDate = new SimpleDateFormat("dd.MM.yyyy").parse(strDate2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        long startDateLong = startDate.getTime();
+        long endDateLong = endDate.getTime() + 86399000;
+
+        TBobj.TableForEveryPurch(startDateLong, endDateLong);
     }
 
 }
