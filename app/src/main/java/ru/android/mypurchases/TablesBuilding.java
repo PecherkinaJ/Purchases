@@ -1,12 +1,15 @@
 package ru.android.mypurchases;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,7 +19,9 @@ import android.widget.PopupMenu;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.Date;
 import java.util.Vector;
 
 
@@ -36,6 +41,8 @@ public class TablesBuilding extends Activity {
     int clickedRow;
     String comment;
     Boolean ifEdition = false;
+
+    String goodText;
 
     DataBase DBobj;
     TableLayout table;
@@ -231,12 +238,11 @@ public class TablesBuilding extends Activity {
                         ifEdition = true;
                         EnterGoods EG = (EnterGoods)context;
                         EG.EditionTable();
-                        //ifEdition =  false;
                         break;
 
                     case R.id.MENU_DELETE:
                         DeleteTableRow(table);
-                        DBobj.DeleteFromDB(clickedRow);
+                        DBobj.DeleteFromDB(clickedRow, "myPurch");
                         break;
 
                     case R.id.MENU_COMMENT:
@@ -535,5 +541,94 @@ public class TablesBuilding extends Activity {
 
         table.addView(row, tableRowNum);
     }
+
+
+    public void showPopupMenuFP(final View v) {
+
+        final PopupMenu popup = new PopupMenu(context, v);
+        popup.inflate(R.menu.popup_futputch);
+
+        TableRow t = (TableRow) v;
+
+        TextView firstTextView = (TextView) t.getChildAt(0);
+        final String IDText1 = firstTextView.getText().toString();
+        Log.d("mylogs", "ID = " + IDText1);
+
+        clickedRow = Integer.parseInt(IDText1);
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+
+                    case R.id.MENU_BOUGHT:
+                        BoughtPurch();
+                        break;
+
+                    case R.id.MENU_EDIT:
+                        ifEdition = true;
+                        //etPurch.setText(goodText);
+                        break;
+
+                    case R.id.MENU_DELETE:
+                        table.removeView(v);
+                        DeleteTableRow(table);
+                        DBobj.DeleteFromDB(clickedRow, "futPurchTable");
+                        break;
+
+                    default:
+                        return false;
+                }
+                return false;
+            }
+
+        });
+
+        popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
+
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                //UpdatingTable();
+            }
+        });
+        popup.show();
+
+    }
+
+    private void BoughtPurch() {
+
+        final long todayDate = new Date(System.currentTimeMillis()).getTime();
+
+        final EditText taskEditText = new EditText(context);
+        taskEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+        AlertDialog dialogPrice = new AlertDialog.Builder(context)
+                .setTitle("Сумма покупки")
+                .setMessage("Введите сумму покупки в поле ниже")
+                .setView(taskEditText)
+                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = taskEditText.getText().toString();
+                        float taskFloat = Float.parseFloat(task);
+
+                        if (TextUtils.isEmpty(taskEditText.getText())) {
+                            Toast.makeText(getApplicationContext(), "Не добавлено. Введите правильную сумму", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        else {
+                            DBobj.FillingDB(todayDate, goodText , taskFloat, "");
+                            Log.d("mylogs", "добавлено: good = " + goodText + ", \n price = " + task);
+                            DeleteTableRow(table);
+                        }
+                    }
+                })
+                .setNegativeButton("Отмена", null)
+                .create();
+        dialogPrice.show();
+    }
+
 
 }

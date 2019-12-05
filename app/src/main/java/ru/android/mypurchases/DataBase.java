@@ -125,8 +125,6 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public String ShowCommentPopup(int clickedRow) {
-    //public String ShowCommentPopup(int clickedRow) {
-        Log.d("mylogs", "id = " + clickedRow);
 
         rowID = clickedRow;
 
@@ -181,9 +179,9 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public void DeleteFromDB(int clickedRow) {
+    public void DeleteFromDB(int clickedRow, String DBtable) {
         rowID = clickedRow;
-        int delCount = db.delete("myPurch", "id = " + rowID, null);
+        int delCount = db.delete(DBtable, "id = " + rowID, null);
         Log.d(logs, "deleted rows count = " + delCount);
     }
 

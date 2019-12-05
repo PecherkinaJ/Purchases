@@ -28,10 +28,6 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
     final String LOG_TAG = "myLogs";
 
-    TextView tvTotal;
-
-    String stotalMonthSum;
-
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     String dateToday;
     Integer curMonth;
@@ -72,8 +68,6 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
-
-        tvTotal = (TextView) findViewById(R.id.tvTotal);
 
         svSearch = (SearchView) findViewById(R.id.svSearch);
 
