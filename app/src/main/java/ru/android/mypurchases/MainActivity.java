@@ -10,16 +10,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button goodent;
     Button stat;
-    Button pref;
     Button futPurch;
 
     Intent GoodIntent;
     Intent Statistic;
-    Intent Preferenses;
     Intent FuturePurchases;
 
     final String LOG_TAG = "myLogs";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,15 +25,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         GoodIntent = new Intent(this, EnterGoods.class);
         Statistic = new Intent(this, Statistic.class);
-        //Preferenses = new Intent(this, Preferenses.class);
         FuturePurchases = new Intent(this, FuturePurchases.class);
 
 
         goodent = (Button) findViewById(R.id.goodent);
         goodent.setOnClickListener(this);
-
-        /*pref = (Button) findViewById(R.id.pref);
-        pref.setOnClickListener(this); */
 
         stat = (Button) findViewById(R.id.stat);
         stat.setOnClickListener(this);
@@ -54,9 +47,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.stat:
                 startActivity(Statistic);
                 break;
-           /* case R.id.pref:
-                startActivity(Preferenses);
-                break;*/
             case R.id.futPurch:
                 startActivity(FuturePurchases);
                 break;

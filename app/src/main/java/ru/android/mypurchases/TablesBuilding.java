@@ -658,7 +658,7 @@ public class TablesBuilding extends Activity {
                         break;
 
                     default:
-                        return false;
+                        break;
                 }
                 return false;
             }
@@ -669,7 +669,7 @@ public class TablesBuilding extends Activity {
 
             @Override
             public void onDismiss(PopupMenu menu) {
-                //UpdatingTable();
+                v.setBackgroundColor(4);
             }
         });
         popup.show();
@@ -738,7 +738,7 @@ public class TablesBuilding extends Activity {
             String strComment = FPvector.get(1);
             Log.d("mylogs", "CLICKED ROW " + clickedRow + " HAD COMMENT = " + strComment);
 
-            if (!strComment.matches("true")) {
+            if (strComment.matches("false")) {
                 Log.d("mylogs", "CLICKED ROW = " + strPurch + " MUST BECOME CROSSED OUT");
                 DBobj.UpdateFP(strPurch, "true");
             } else {

@@ -389,16 +389,15 @@ public class DataBase extends SQLiteOpenHelper {
 
         Vector <String> newValueArray = new Vector<>();
 
-        if (c.moveToLast()) {
+        if (c.moveToFirst()) {
             String strID = c.getString(c.getColumnIndex("id"));
             String strGood = c.getString(c.getColumnIndex("purchase"));
             String strCom = c.getString(c.getColumnIndex("comment"));
 
-            newValueArray.add(strID);
-            newValueArray.add(strGood);
-            newValueArray.add(strCom);
+            newValueArray.add(0, strID);
+            newValueArray.add(1, strGood);
+            newValueArray.add(2, strCom);
         }
-        c.close();
         return newValueArray;
     }
 
