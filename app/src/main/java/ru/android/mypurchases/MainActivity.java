@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         GoodIntent = new Intent(this, EnterGoods.class);
         Statistic = new Intent(this, Statistic.class);
         //Preferenses = new Intent(this, Preferenses.class);
-        //FuturePurchases = new Intent(this, FuturePurchases.class);
+        FuturePurchases = new Intent(this, FuturePurchases.class);
 
 
         goodent = (Button) findViewById(R.id.goodent);
@@ -41,9 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stat = (Button) findViewById(R.id.stat);
         stat.setOnClickListener(this);
 
-        /*futPurch = (Button) findViewById(R.id.futPurch);
+        futPurch = (Button) findViewById(R.id.futPurch);
         futPurch.setOnClickListener(this);
-*/
     }
 
 
@@ -57,10 +56,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
            /* case R.id.pref:
                 startActivity(Preferenses);
-                break;
+                break;*/
             case R.id.futPurch:
                 startActivity(FuturePurchases);
-                break; */
+                break;
             default:
                 break;
         }

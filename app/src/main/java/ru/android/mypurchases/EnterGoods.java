@@ -128,7 +128,7 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
                     return;
                 }
 
-                if (TBobj.ifEdition == true) {
+                if (TBobj.ifEdition) {
                     String _date = etDate.getText().toString();
                     String _good = etGoods.getText().toString();
                     Float _price = Float.parseFloat(etPrice.getText().toString());

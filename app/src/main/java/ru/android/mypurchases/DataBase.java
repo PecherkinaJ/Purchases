@@ -48,6 +48,9 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
+
+    /* ENTER GOODS */
+
     public int getRowsCountEG() {
         long dateToday = System.currentTimeMillis();
         long weekAgo = dateToday - 7 * 1000 * 60 * 60 * 24;
@@ -209,6 +212,8 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
+    /* STATISTICS */
+
     public int getRowsCountStat_query(float flExpDown,
                                       float flExpTop,
                                       long startDateLong,
@@ -342,6 +347,125 @@ public class DataBase extends SQLiteOpenHelper {
         }
 
         return everyDayVector;
+    }
+
+
+
+    /* FUTURE PURCHASES */
+
+    public void FillingFutPurch(String insertGood, String comment){
+            cv.put("purchase", insertGood);
+            cv.put("comment", comment);
+            this.getWritableDatabase().insert("futPurchTable", null, cv);
+    }
+
+
+    public int getRowsCountStat_futurepurch() {
+        Cursor c = db.rawQuery("SELECT * FROM futPurchTable", null);
+        int count = c.getCount();
+        c.close();
+        return count;
+    }
+
+
+    public Vector ShowFutPurch(int num){
+
+        Vector<String> futPurchVector = new Vector<>();
+
+        Cursor c = db.rawQuery("SELECT * FROM futPurchTable", null);
+
+        if (c.moveToPosition(num)) {
+            futPurchVector.add(0, c.getString(c.getColumnIndex("id")));
+            futPurchVector.add(1, c.getString(c.getColumnIndex("purchase")));
+            futPurchVector.add(2, c.getString(c.getColumnIndex("comment")));
+        }
+
+        return futPurchVector;
+    }
+
+
+    public Vector UpdatingFP() {
+        Cursor c = db.query("futPurchTable", null, null, null, null, null, null);
+
+        Vector <String> newValueArray = new Vector<>();
+
+        if (c.moveToLast()) {
+            String strID = c.getString(c.getColumnIndex("id"));
+            String strGood = c.getString(c.getColumnIndex("purchase"));
+            String strCom = c.getString(c.getColumnIndex("comment"));
+
+            newValueArray.add(strID);
+            newValueArray.add(strGood);
+            newValueArray.add(strCom);
+        }
+        c.close();
+        return newValueArray;
+    }
+
+
+    public Vector RecreatedRowFP(){
+        Vector<String> updatedDBRow = new Vector<>();
+        Cursor c = db.rawQuery("SELECT * FROM futPurchTable WHERE ID = " + rowID, null);
+        if (c.moveToFirst()) {
+
+            String IDText = c.getString(c.getColumnIndex("id"));
+            String purchText = c.getString(c.getColumnIndex("purchase"));
+            String comText = c.getString(c.getColumnIndex("comment"));
+
+            updatedDBRow.add(0, IDText) ;
+            updatedDBRow.add(1, purchText);
+            updatedDBRow.add(2, comText);
+        }
+        c.close();
+        return updatedDBRow;
+    }
+
+
+    public String GetDataToEditionFP(int clickedRow) {
+        rowID = clickedRow;
+        Cursor c = db.rawQuery("SELECT * FROM futPurchTable WHERE id = " + rowID, null);
+        String strGood = "";
+        if (c.moveToFirst()) {
+            strGood = c.getString(c.getColumnIndex("purchase"));
+        }
+        return strGood;
+    }
+
+
+    public void UpdateFP(String purchase) {
+        cv.put("purchase", purchase);
+        db.update("futPurchTable", cv, "id = " + rowID, null);
+    }
+
+
+    public void UpdateFP(String purchase, String comment) {
+        cv.put("comment", comment);
+        db.update("futPurchTable", cv, "id = " + rowID, null);
+    }
+
+
+    public String BoughtGood(int clickedRow){
+        String bought = "";
+        rowID = clickedRow;
+
+        Cursor c = db.rawQuery("SELECT id, purchase FROM futPurchTable WHERE id = " + rowID, null);
+        if (c.moveToFirst()) {
+            bought = c.getString(c.getColumnIndex("purchase"));
+        }
+        return bought;
+    }
+
+
+    Vector TrueFalseComment(int clickedRow){
+        rowID = clickedRow;
+        Vector <String> comment = new Vector<>();
+
+        Cursor c = db.rawQuery("SELECT id, purchase, comment FROM futPurchTable WHERE id = " + rowID, null);
+        if (c.moveToFirst()) {
+            comment.add(c.getString(c.getColumnIndex("purchase")));
+            comment.add(c.getString(c.getColumnIndex("comment")));
+        }
+        return comment;
     }
 
 }

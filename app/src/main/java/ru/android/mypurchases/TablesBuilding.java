@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
@@ -72,17 +73,8 @@ public class TablesBuilding extends Activity {
         this.context = context;
     }
 
-    public void DisplayTableEG() {
-        for (int i=0; i<DBobj.getRowsCountEG(); i++) {
-            Vector<String> vectorRows = DBobj.DisplayExistingTable(i);
-            String strID = vectorRows.get(0);
-            String strDate = vectorRows.get(1);
-            String strGood = vectorRows.get(2);
-            String strPrice = vectorRows.get(3);
-            DisplayExistingTable(strID, strDate, strGood, strPrice, true, 1);
-        }
-    }
 
+    /* ENTER GOODS */
 
     public void HeadRow(String IDColName,
                         String secondColName,
@@ -131,29 +123,16 @@ public class TablesBuilding extends Activity {
         if (hidingFirstColumn) ID1.setVisibility(View.GONE);
     }
 
-     public void HeadRow(String firstColName,
-                         String secondColName) {
 
-            row = new TableRow(context);
-            row.setLayoutParams(tableParams);
-
-            TextView ID1 = new TextView(context);
-            TextView date1 = new TextView(context);
-            ID1.setLayoutParams(rowParams);
-            date1.setLayoutParams(rowParams);
-            ID1.setTextSize(23);
-            ID1.setPadding(25, 5, 25, 5);
-            ID1.setTypeface(null, Typeface.BOLD_ITALIC);
-            date1.setTextSize(23);
-            date1.setPadding(25, 5, 25, 5);
-            date1.setTypeface(null, Typeface.BOLD_ITALIC);
-
-            ID1.setText(firstColName);
-            date1.setText(secondColName);
-
-            row.addView(ID1);
-            row.addView(date1);
-            table.addView(row);
+    public void DisplayTableEG() {
+        for (int i=0; i<DBobj.getRowsCountEG(); i++) {
+            Vector<String> vectorRows = DBobj.DisplayExistingTable(i);
+            String strID = vectorRows.get(0);
+            String strDate = vectorRows.get(1);
+            String strGood = vectorRows.get(2);
+            String strPrice = vectorRows.get(3);
+            DisplayExistingTable(strID, strDate, strGood, strPrice, true, 1);
+        }
     }
 
 
@@ -204,7 +183,7 @@ public class TablesBuilding extends Activity {
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
                 v.setBackgroundColor(Color.GRAY);
-                showPopupMenuEG(v, table, context);
+                showPopupMenuEG(v);
 
                 tableRowID = table.indexOfChild(v);
                 return true;
@@ -215,7 +194,7 @@ public class TablesBuilding extends Activity {
     }
 
 
-    public void showPopupMenuEG(final View v, final TableLayout table, final Context context) {
+    public void showPopupMenuEG(final View v) {
         popup = new PopupMenu(context, v);
         popup.inflate(R.menu.popup_menu);
 
@@ -241,7 +220,7 @@ public class TablesBuilding extends Activity {
                         break;
 
                     case R.id.MENU_DELETE:
-                        DeleteTableRow(table);
+                        table.removeViewAt(tableRowID);
                         DBobj.DeleteFromDB(clickedRow, "myPurch");
                         break;
 
@@ -295,11 +274,6 @@ public class TablesBuilding extends Activity {
     }
 
 
-    public void DeleteTableRow(TableLayout table) {
-        table.removeViewAt(tableRowID);
-    }
-
-
     public int EditionalRow() {
         return clickedRow;
     }
@@ -315,6 +289,34 @@ public class TablesBuilding extends Activity {
         DisplayExistingTable(strID, strDate, strGood, strPrice, true, tableRowID);
     }
 
+
+
+    /* STATISTIC */
+
+    public void HeadRow(String firstColName,
+                        String secondColName) {
+
+        row = new TableRow(context);
+        row.setLayoutParams(tableParams);
+
+        TextView ID1 = new TextView(context);
+        TextView date1 = new TextView(context);
+        ID1.setLayoutParams(rowParams);
+        date1.setLayoutParams(rowParams);
+        ID1.setTextSize(23);
+        ID1.setPadding(25, 5, 25, 5);
+        ID1.setTypeface(null, Typeface.BOLD_ITALIC);
+        date1.setTextSize(23);
+        date1.setPadding(25, 5, 25, 5);
+        date1.setTypeface(null, Typeface.BOLD_ITALIC);
+
+        ID1.setText(firstColName);
+        date1.setText(secondColName);
+
+        row.addView(ID1);
+        row.addView(date1);
+        table.addView(row);
+    }
 
 
     public void QueryTableForStat(float flExpDown,
@@ -506,7 +508,7 @@ public class TablesBuilding extends Activity {
         table.setColumnStretchable(0, true);
         table.setColumnStretchable(1, true);
         HeadRow("Месяц:", "Потрачено:");
-        for (int i=0; i<DBobj.getRowsCountStat_everypurch(startDateLong, endDateLong); i++) {
+        for (int i=0; i<=DBobj.getRowsCountStat_everypurch(startDateLong, endDateLong); i++) {
             Vector <String> getVectForEverypurch = DBobj.EveryPurchTable(i, startDateLong, endDateLong);
             String strDate = getVectForEverypurch.get(0);
             String strCost = getVectForEverypurch.get(1);
@@ -543,6 +545,83 @@ public class TablesBuilding extends Activity {
     }
 
 
+    /* FUTURE PURCHASES */
+
+    public void AddToFP(String futureGood){
+        DBobj.FillingFutPurch(futureGood, "false");
+
+        Vector<String> newData = DBobj.UpdatingFP();
+        String newStrID = newData.get(0);
+        String newstrPurch = newData.get(1);
+        String newstrCom = newData.get(2);
+        TableForFP(newStrID, newstrPurch, newstrCom, 0);
+    }
+
+
+    public void DisplayFutPurch(){
+        int a = DBobj.getRowsCountStat_futurepurch();
+        for (int i=0; i<a; i++){
+            Vector <String> futPurch = DBobj.ShowFutPurch(i);
+            String firstCol = futPurch.get(0);
+            String secCol = futPurch.get(1);
+            String comment = futPurch.get(2);
+            Log.d("mylogs", "DB: \nPurchase = " + futPurch.get(1));
+            TableForFP(firstCol, secCol, comment, 0);
+        }
+    }
+
+
+    public void TableForFP(String firstCol,
+                           String secCol,
+                           String comment,
+                           int tableRowNum){
+
+        row = new TableRow(context);
+        row.setLayoutParams(tableParams);
+
+        tvID = new TextView(context);
+        tvGood = new TextView(context);
+
+        tvID.setLayoutParams(rowParams);
+        tvGood.setLayoutParams(rowParams);
+
+        tvGood.setTextSize(22);
+        tvGood.setPadding(5, 5, 5, 30);
+
+        tvID.setText(firstCol);
+        tvGood.setText(secCol);
+
+        row.addView(tvID);
+        row.addView(tvGood);
+
+        table.addView(row, tableRowNum);
+        table.setColumnStretchable(1, true);
+        tvID.setVisibility(View.GONE);
+
+        if (comment.matches("true")) {
+            tvGood.setTypeface(null, Typeface.ITALIC);
+            tvGood.setPaintFlags(tvGood.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            tvGood.setTextColor(Color.parseColor("#50000000"));
+        }
+
+        row.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO Auto-generated method stub
+                v.setBackgroundColor(Color.GRAY);
+                showPopupMenuFP(v);
+
+                tableRowID = table.indexOfChild(v);
+                return true;
+            }
+        });
+        registerForContextMenu(row);
+
+        row.setOnClickListener(onClickListener);
+    }
+
+
     public void showPopupMenuFP(final View v) {
 
         final PopupMenu popup = new PopupMenu(context, v);
@@ -569,12 +648,12 @@ public class TablesBuilding extends Activity {
 
                     case R.id.MENU_EDIT:
                         ifEdition = true;
-                        //etPurch.setText(goodText);
+                        FuturePurchases FP = (FuturePurchases) context;
+                        FP.EditionTable();
                         break;
 
                     case R.id.MENU_DELETE:
-                        table.removeView(v);
-                        DeleteTableRow(table);
+                        table.removeViewAt(tableRowID);
                         DBobj.DeleteFromDB(clickedRow, "futPurchTable");
                         break;
 
@@ -596,6 +675,7 @@ public class TablesBuilding extends Activity {
         popup.show();
 
     }
+
 
     private void BoughtPurch() {
 
@@ -619,9 +699,11 @@ public class TablesBuilding extends Activity {
                             return;
                         }
                         else {
+                            goodText = DBobj.BoughtGood(clickedRow);
                             DBobj.FillingDB(todayDate, goodText , taskFloat, "");
-                            Log.d("mylogs", "добавлено: good = " + goodText + ", \n price = " + task);
-                            DeleteTableRow(table);
+                            Log.d("mylogs", "\nдобавлено: \ngood = " + goodText + ", \n price = " + task);
+                            DBobj.DeleteFromDB(clickedRow, "futPurchTable");
+                            table.removeViewAt(tableRowID);
                         }
                     }
                 })
@@ -630,5 +712,43 @@ public class TablesBuilding extends Activity {
         dialogPrice.show();
     }
 
+
+    public void RecreatingRowFP(){
+        Vector<String> recreatedDB = DBobj.RecreatedRowFP();
+        table.removeViewAt(tableRowID);
+        String strID = recreatedDB.get(0);
+        String strDate = recreatedDB.get(1);
+        String strCom = recreatedDB.get(2);
+        TableForFP(strID, strDate, strCom, tableRowID);
+    }
+
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            tableRowID = table.indexOfChild(v);
+            TableRow t = (TableRow) v;
+
+            TextView idTextView = (TextView) t.getChildAt(0);
+            final String strID = idTextView.getText().toString();
+            clickedRow = Integer.parseInt(strID);
+
+            Vector<String> FPvector = DBobj.TrueFalseComment(clickedRow);
+            String strPurch = FPvector.get(0);
+            String strComment = FPvector.get(1);
+            Log.d("mylogs", "CLICKED ROW " + clickedRow + " HAD COMMENT = " + strComment);
+
+            if (!strComment.matches("true")) {
+                Log.d("mylogs", "CLICKED ROW = " + strPurch + " MUST BECOME CROSSED OUT");
+                DBobj.UpdateFP(strPurch, "true");
+            } else {
+                v.setBackgroundColor(Color.alpha(100));
+                Log.d("mylogs", "CLICKED ROW = " + strPurch + " MUST BECOME NORMAL");
+                DBobj.UpdateFP(strPurch, "false");
+            }
+            RecreatingRowFP();
+        }
+
+    };
 
 }
