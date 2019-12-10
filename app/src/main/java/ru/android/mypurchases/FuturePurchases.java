@@ -43,7 +43,7 @@ public class FuturePurchases extends AppCompatActivity implements View.OnClickLi
                         case KeyEvent.KEYCODE_ENTER:
                             Log.d("mylogs", "-------- ENTER WAS CLICKED!! ---------");
                             FillingTable();
-                            return true;
+                            //return true;
                         default:
                             break;
                     }
@@ -65,7 +65,10 @@ public class FuturePurchases extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        FillingTable();
+        switch (v.getId()) {
+            case R.id.btnOK:
+                FillingTable();
+        }
     }
 
 

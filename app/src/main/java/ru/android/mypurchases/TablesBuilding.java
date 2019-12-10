@@ -503,13 +503,13 @@ public class TablesBuilding extends Activity {
     }
 
 
-    public void TableForEveryPurch(long startDateLong, long endDateLong){
+    public void TableForEveryPurch(long startDateLong, long endDateLong, String svQuery){
         table.removeAllViews();
         table.setColumnStretchable(0, true);
         table.setColumnStretchable(1, true);
-        HeadRow("Месяц:", "Потрачено:");
-        for (int i=0; i<=DBobj.getRowsCountStat_everypurch(startDateLong, endDateLong); i++) {
-            Vector <String> getVectForEverypurch = DBobj.EveryPurchTable(i, startDateLong, endDateLong);
+        HeadRow("Покупка:", "Потрачено:");
+        for (int i=0; i<DBobj.getRowsCountStat_everypurch(startDateLong, endDateLong, svQuery); i++) {
+            Vector <String> getVectForEverypurch = DBobj.EveryPurchTable(i, startDateLong, endDateLong, svQuery);
             String strDate = getVectForEverypurch.get(0);
             String strCost = getVectForEverypurch.get(1);
             StatTableEverySmth(strDate, strCost, 1);
@@ -554,6 +554,7 @@ public class TablesBuilding extends Activity {
         String newStrID = newData.get(0);
         String newstrPurch = newData.get(1);
         String newstrCom = newData.get(2);
+        Log.d("mylogs", "new data:" + newStrID + " " + newstrPurch + " " + newstrCom);
         TableForFP(newStrID, newstrPurch, newstrCom, 0);
     }
 
@@ -611,7 +612,6 @@ public class TablesBuilding extends Activity {
                 // TODO Auto-generated method stub
                 v.setBackgroundColor(Color.GRAY);
                 showPopupMenuFP(v);
-
                 tableRowID = table.indexOfChild(v);
                 return true;
             }
@@ -714,7 +714,7 @@ public class TablesBuilding extends Activity {
 
 
     public void RecreatingRowFP(){
-        Vector<String> recreatedDB = DBobj.RecreatedRowFP();
+        Vector<String> recreatedDB = DBobj.RecreatedRowFP(clickedRow);
         table.removeViewAt(tableRowID);
         String strID = recreatedDB.get(0);
         String strDate = recreatedDB.get(1);
@@ -733,6 +733,9 @@ public class TablesBuilding extends Activity {
             final String strID = idTextView.getText().toString();
             clickedRow = Integer.parseInt(strID);
 
+            TextView purchTextView = (TextView) t.getChildAt(1);
+            final String strPurch1 = purchTextView.getText().toString();
+
             Vector<String> FPvector = DBobj.TrueFalseComment(clickedRow);
             String strPurch = FPvector.get(0);
             String strComment = FPvector.get(1);
@@ -740,13 +743,14 @@ public class TablesBuilding extends Activity {
 
             if (strComment.matches("false")) {
                 Log.d("mylogs", "CLICKED ROW = " + strPurch + " MUST BECOME CROSSED OUT");
-                DBobj.UpdateFP(strPurch, "true");
+                DBobj.UpdateFPcomment(strPurch1, "true");
+                RecreatingRowFP();
             } else {
                 v.setBackgroundColor(Color.alpha(100));
                 Log.d("mylogs", "CLICKED ROW = " + strPurch + " MUST BECOME NORMAL");
-                DBobj.UpdateFP(strPurch, "false");
+                DBobj.UpdateFPcomment(strPurch1, "false");
+                RecreatingRowFP();
             }
-            RecreatingRowFP();
         }
 
     };

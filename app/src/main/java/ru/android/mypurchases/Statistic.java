@@ -308,7 +308,9 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         long startDateLong = startDate.getTime();
         long endDateLong = endDate.getTime() + 86399000;
 
-        TBobj.TableForEveryPurch(startDateLong, endDateLong);
+        svQuery = svSearch.getQuery().toString();
+
+        TBobj.TableForEveryPurch(startDateLong, endDateLong, svQuery);
     }
 
 }

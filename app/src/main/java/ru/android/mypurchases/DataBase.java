@@ -212,6 +212,7 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
+
     /* STATISTICS */
 
     public int getRowsCountStat_query(float flExpDown,
@@ -257,8 +258,6 @@ public class DataBase extends SQLiteOpenHelper {
             vectQuery.add(2, strGood);
             vectQuery.add(3, strPrice);
             vectQuery.add(4, strComm);
-
-            Log.d("mylogs", "vector = " + vectQuery);
         }
         return vectQuery;
     }
@@ -288,10 +287,14 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public int getRowsCountStat_everypurch(long startDateLong, long endDateLong) {
+    public int getRowsCountStat_everypurch(long startDateLong, long endDateLong, String svQuery) {
+        Log.d("mylogs", "svQuery = " + svQuery);
         Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from myPurch" +
-                " where date >= " + startDateLong + " and date <= " + endDateLong + " GROUP BY good ORDER BY summarize", null);
+                " where date >= " + startDateLong + " and date <= " + endDateLong +
+                " AND good LIKE '%" + svQuery + "%' " +
+                " GROUP BY good ORDER BY summarize", null);
         int count = c.getCount();
+        Log.d("mylogs", "number of every purchase vector = " + count);
         c.close();
         return count;
     }
@@ -334,16 +337,19 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public Vector EveryPurchTable(int num, long startDateLong, long endDateLong){
+    public Vector EveryPurchTable(int num, long startDateLong, long endDateLong, String svQuery){
 
         Vector<String> everyDayVector = new Vector<>();
 
         Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from myPurch" +
-                " where date >= " + startDateLong + " and date <= " + endDateLong + " GROUP BY good ORDER BY summarize", null);
+                " where date >= " + startDateLong + " and date <= " + endDateLong +
+                " AND good LIKE '%" + svQuery + "%' " +
+                " GROUP BY good ORDER BY summarize", null);
 
         if (c.moveToPosition(num)) {
             everyDayVector.add(0, c.getString(c.getColumnIndex("good")));
             everyDayVector.add(1, c.getString(c.getColumnIndex("summarize")));
+            Log.d("mylogs", "vector of every purchase = " + everyDayVector.get(0) + " --> " + everyDayVector.get(1));
         }
 
         return everyDayVector;
@@ -389,7 +395,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         Vector <String> newValueArray = new Vector<>();
 
-        if (c.moveToFirst()) {
+        if (c.moveToLast()) {
             String strID = c.getString(c.getColumnIndex("id"));
             String strGood = c.getString(c.getColumnIndex("purchase"));
             String strCom = c.getString(c.getColumnIndex("comment"));
@@ -402,11 +408,11 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public Vector RecreatedRowFP(){
+    public Vector RecreatedRowFP(int clickedRow){
+        rowID = clickedRow;
         Vector<String> updatedDBRow = new Vector<>();
         Cursor c = db.rawQuery("SELECT * FROM futPurchTable WHERE ID = " + rowID, null);
         if (c.moveToFirst()) {
-
             String IDText = c.getString(c.getColumnIndex("id"));
             String purchText = c.getString(c.getColumnIndex("purchase"));
             String comText = c.getString(c.getColumnIndex("comment"));
@@ -437,7 +443,8 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public void UpdateFP(String purchase, String comment) {
+    public void UpdateFPcomment(String purchase, String comment) {
+        cv.put("purchase", purchase);
         cv.put("comment", comment);
         db.update("futPurchTable", cv, "id = " + rowID, null);
     }
@@ -459,7 +466,7 @@ public class DataBase extends SQLiteOpenHelper {
         rowID = clickedRow;
         Vector <String> comment = new Vector<>();
 
-        Cursor c = db.rawQuery("SELECT id, purchase, comment FROM futPurchTable WHERE id = " + rowID, null);
+        Cursor c = db.rawQuery("SELECT id, purchase, comment FROM futPurchTable WHERE id = " + clickedRow, null);
         if (c.moveToFirst()) {
             comment.add(c.getString(c.getColumnIndex("purchase")));
             comment.add(c.getString(c.getColumnIndex("comment")));
