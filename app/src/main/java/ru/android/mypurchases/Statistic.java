@@ -1,6 +1,7 @@
 package ru.android.mypurchases;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -175,12 +176,17 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
                 if (posOfSpin == 4) TotalForEveryMonth();
                 if (posOfSpin == 5) TotalForEveryPurch();
 
-            default:
+            case R.id.btnShowGraph:
+                /*if (posOfSpin == 3)
+                if (posOfSpin == 4)
+                if (posOfSpin == 5) */
+                Intent charts = new Intent(Statistic.this, Charts.class);
+                startActivity(charts);
                 break;
 
-
+            default:
+                break;
         }
-
     }
 
 

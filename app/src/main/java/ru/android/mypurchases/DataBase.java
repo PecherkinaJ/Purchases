@@ -16,7 +16,6 @@ import java.util.Vector;
 public class DataBase extends SQLiteOpenHelper {
 
     String logs = "MYLOGS";
-    ContentValues cv = new ContentValues();
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     SQLiteDatabase db;
     int rowID;
@@ -94,6 +93,7 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public void FillingDB(long insertData, String insertGood, float insertPrice, String comment) {
+        ContentValues cv = new ContentValues();
         cv.put("date", insertData);
         cv.put("good", insertGood);
         cv.put("price", insertPrice);
@@ -143,6 +143,7 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public void UpdateComment(int clickedRow, String task) {
+        ContentValues cv = new ContentValues();
         rowID = clickedRow;
         cv.put("comment", task);
         int updCount = db.update("myPurch", cv, "id = " + rowID, null);
@@ -151,6 +152,7 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public void UpdateDB(long date, String good, float price) {
+        ContentValues cv = new ContentValues();
         cv.put("date", date);
         cv.put("good", good);
         cv.put("price", price);
@@ -360,9 +362,10 @@ public class DataBase extends SQLiteOpenHelper {
     /* FUTURE PURCHASES */
 
     public void FillingFutPurch(String insertGood, String comment){
-            cv.put("purchase", insertGood);
-            cv.put("comment", comment);
-            this.getWritableDatabase().insert("futPurchTable", null, cv);
+        ContentValues cv = new ContentValues();
+        cv.put("purchase", insertGood);
+        cv.put("comment", comment);
+        this.getWritableDatabase().insert("futPurchTable", null, cv);
     }
 
 
@@ -438,15 +441,16 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public void UpdateFP(String purchase) {
-        cv.put("purchase", purchase);
-        db.update("futPurchTable", cv, "id = " + rowID, null);
+        ContentValues ccv = new ContentValues();
+        ccv.put("purchase", purchase);
+        db.update("futPurchTable", ccv, "id = " + rowID, null);
     }
 
 
-    public void UpdateFPcomment(String purchase, String comment) {
-        cv.put("purchase", purchase);
-        cv.put("comment", comment);
-        db.update("futPurchTable", cv, "id = " + rowID, null);
+    public void UpdateFPcomment(String comment) {
+        ContentValues ccv = new ContentValues();
+        ccv.put("comment", comment);
+        db.update("futPurchTable", ccv, "id = " + rowID, null);
     }
 
 

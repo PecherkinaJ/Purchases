@@ -733,9 +733,6 @@ public class TablesBuilding extends Activity {
             final String strID = idTextView.getText().toString();
             clickedRow = Integer.parseInt(strID);
 
-            TextView purchTextView = (TextView) t.getChildAt(1);
-            final String strPurch1 = purchTextView.getText().toString();
-
             Vector<String> FPvector = DBobj.TrueFalseComment(clickedRow);
             String strPurch = FPvector.get(0);
             String strComment = FPvector.get(1);
@@ -743,12 +740,12 @@ public class TablesBuilding extends Activity {
 
             if (strComment.matches("false")) {
                 Log.d("mylogs", "CLICKED ROW = " + strPurch + " MUST BECOME CROSSED OUT");
-                DBobj.UpdateFPcomment(strPurch1, "true");
+                DBobj.UpdateFPcomment("true");
                 RecreatingRowFP();
             } else {
                 v.setBackgroundColor(Color.alpha(100));
                 Log.d("mylogs", "CLICKED ROW = " + strPurch + " MUST BECOME NORMAL");
-                DBobj.UpdateFPcomment(strPurch1, "false");
+                DBobj.UpdateFPcomment("false");
                 RecreatingRowFP();
             }
         }
