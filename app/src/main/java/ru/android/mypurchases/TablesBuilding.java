@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Vector;
 
 
@@ -48,6 +49,8 @@ public class TablesBuilding extends Activity {
     DataBase DBobj;
     TableLayout table;
 
+    HashMap<String, Float> hashMap = new HashMap<>();
+
 
     TablesBuilding(DataBase _db,
                    Context context,
@@ -71,6 +74,11 @@ public class TablesBuilding extends Activity {
         DBobj = _db;
         this.table = table;
         this.context = context;
+    }
+
+
+    TablesBuilding() {
+
     }
 
 
@@ -485,6 +493,10 @@ public class TablesBuilding extends Activity {
             String strDate = getVectForEveryday.get(0);
             String strCost = getVectForEveryday.get(1);
             StatTableEverySmth(strDate, strCost, 1);
+
+            float floatCost = Float.parseFloat(strCost);
+
+            hashMap.put(strDate, floatCost);
         }
     }
 
@@ -499,6 +511,10 @@ public class TablesBuilding extends Activity {
             String strDate = getVectForEverymonth.get(0);
             String strCost = getVectForEverymonth.get(1);
             StatTableEverySmth(strDate, strCost, 1);
+
+            float floatCost = Float.parseFloat(strCost);
+
+            hashMap.put(strDate, floatCost);
         }
     }
 
@@ -513,7 +529,18 @@ public class TablesBuilding extends Activity {
             String strDate = getVectForEverypurch.get(0);
             String strCost = getVectForEverypurch.get(1);
             StatTableEverySmth(strDate, strCost, 1);
+
+            float floatCost = Float.parseFloat(strCost);
+
+            hashMap.put(strDate, floatCost);
+
+            HashMapForGraph();
+            //Log.d("mylogs", "hashmap = " + hashMap);
         }
+    }
+
+    public HashMap HashMapForGraph(){
+        return hashMap;
     }
 
 

@@ -290,13 +290,12 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public int getRowsCountStat_everypurch(long startDateLong, long endDateLong, String svQuery) {
-        Log.d("mylogs", "svQuery = " + svQuery);
         Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from myPurch" +
                 " where date >= " + startDateLong + " and date <= " + endDateLong +
                 " AND good LIKE '%" + svQuery + "%' " +
                 " GROUP BY good ORDER BY summarize", null);
         int count = c.getCount();
-        Log.d("mylogs", "number of every purchase vector = " + count);
+        //Log.d("mylogs", "number of every purchase vector = " + count);
         c.close();
         return count;
     }
@@ -351,7 +350,6 @@ public class DataBase extends SQLiteOpenHelper {
         if (c.moveToPosition(num)) {
             everyDayVector.add(0, c.getString(c.getColumnIndex("good")));
             everyDayVector.add(1, c.getString(c.getColumnIndex("summarize")));
-            Log.d("mylogs", "vector of every purchase = " + everyDayVector.get(0) + " --> " + everyDayVector.get(1));
         }
 
         return everyDayVector;

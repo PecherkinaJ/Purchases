@@ -14,11 +14,9 @@ import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -27,15 +25,8 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
     DataBase DBobj;
     TablesBuilding TBobj;
 
-    final String LOG_TAG = "myLogs";
-
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     String dateToday;
-    Integer curMonth;
-    Integer curYear;
-
-    String ifContains;
-    String ifContainsPrevMon;
 
     SearchView svSearch;
     Spinner spinSort;
@@ -57,12 +48,8 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
     TableLayout tableTotal;
 
-    ArrayList<String> DateArray;
-    ArrayList <Float> PriceDayArray;
-    ArrayList <String> GoodsArray;
-    ArrayList <Float> PriceGoodArray;
-    ArrayList <String> MonthArray;
-    ArrayList <Float> MonthWastingsArray;
+    Long startDateLong;
+    Long endDateLong;
 
 
     @Override
@@ -175,13 +162,13 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
                 if (posOfSpin == 3) TotalForEveryDay();
                 if (posOfSpin == 4) TotalForEveryMonth();
                 if (posOfSpin == 5) TotalForEveryPurch();
+                break;
 
             case R.id.btnShowGraph:
-                /*if (posOfSpin == 3)
-                if (posOfSpin == 4)
-                if (posOfSpin == 5) */
-                Intent charts = new Intent(Statistic.this, Charts.class);
-                startActivity(charts);
+                if (posOfSpin == 3 || posOfSpin == 4 || posOfSpin == 5) {
+                    Intent charts = new Intent(Statistic.this, Charts.class);
+                    startActivity(charts);
+                }
                 break;
 
             default:
@@ -241,8 +228,8 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
             e.printStackTrace();
         }
 
-        Long startDateLong = startDate.getTime();
-        Long endDateLong = endDate.getTime() + 86399000;
+        startDateLong = startDate.getTime();
+        endDateLong = endDate.getTime() + 86399000;
 
         svQuery = svSearch.getQuery().toString();
 
