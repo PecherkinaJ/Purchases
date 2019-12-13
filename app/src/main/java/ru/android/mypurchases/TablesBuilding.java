@@ -22,8 +22,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 
@@ -49,7 +51,8 @@ public class TablesBuilding extends Activity {
     DataBase DBobj;
     TableLayout table;
 
-    HashMap<String, Float> hashMap = new HashMap<>();
+    ArrayList<String> arrayString = new ArrayList();
+    ArrayList<String> arrayFloat = new ArrayList();
 
 
     TablesBuilding(DataBase _db,
@@ -484,6 +487,8 @@ public class TablesBuilding extends Activity {
 
 
     public void TableForEveryDay(long startDateLong, long endDateLong){
+        arrayFloat.clear();
+        arrayString.clear();
         table.removeAllViews();
         table.setColumnStretchable(0, true);
         table.setColumnStretchable(1, true);
@@ -495,13 +500,16 @@ public class TablesBuilding extends Activity {
             StatTableEverySmth(strDate, strCost, 1);
 
             float floatCost = Float.parseFloat(strCost);
-
-            hashMap.put(strDate, floatCost);
+            arrayString.add(strDate);
+            arrayFloat.add(strCost);
         }
+        //Log.d("mylogs", "Arrays: " + arrayString + "\n" + arrayFloat);
     }
 
 
     public void TableForEveryMonth(){
+        arrayFloat.clear();
+        arrayString.clear();
         table.removeAllViews();
         table.setColumnStretchable(0, true);
         table.setColumnStretchable(1, true);
@@ -513,13 +521,17 @@ public class TablesBuilding extends Activity {
             StatTableEverySmth(strDate, strCost, 1);
 
             float floatCost = Float.parseFloat(strCost);
-
-            hashMap.put(strDate, floatCost);
+            arrayString.add(strDate);
+            arrayFloat.add(strCost);
+            //arrayFloat.add(floatCost);
         }
+        //Log.d("mylogs", "Arrays: " + arrayString + "\n" + arrayFloat);
     }
 
 
     public void TableForEveryPurch(long startDateLong, long endDateLong, String svQuery){
+        arrayFloat.clear();
+        arrayString.clear();
         table.removeAllViews();
         table.setColumnStretchable(0, true);
         table.setColumnStretchable(1, true);
@@ -531,16 +543,10 @@ public class TablesBuilding extends Activity {
             StatTableEverySmth(strDate, strCost, 1);
 
             float floatCost = Float.parseFloat(strCost);
-
-            hashMap.put(strDate, floatCost);
-
-            HashMapForGraph();
-            //Log.d("mylogs", "hashmap = " + hashMap);
+            arrayString.add(strDate);
+            arrayFloat.add(strCost);
         }
-    }
-
-    public HashMap HashMapForGraph(){
-        return hashMap;
+        //Log.d("mylogs", "Arrays: " + arrayString + "\n" + arrayFloat);
     }
 
 

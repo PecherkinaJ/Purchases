@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,10 +16,14 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Statistic extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,7 +35,7 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
     SearchView svSearch;
     Spinner spinSort;
-    int posOfSpin;
+    public int posOfSpin;
 
     EditText etDateBuy;
     EditText etDateBuyEnd;
@@ -50,6 +55,9 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
     Long startDateLong;
     Long endDateLong;
+
+    ArrayList<String> arrayString = new ArrayList();
+    ArrayList<String> arrayFloat = new ArrayList();
 
 
     @Override
@@ -165,10 +173,15 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
                 break;
 
             case R.id.btnShowGraph:
-                if (posOfSpin == 3 || posOfSpin == 4 || posOfSpin == 5) {
-                    Intent charts = new Intent(Statistic.this, Charts.class);
-                    startActivity(charts);
-                }
+                onClick(btnShowTable);
+                arrayFloat = TBobj.arrayFloat;
+                arrayString = TBobj.arrayString;
+                Log.d("mylogs", "Arrays: " + arrayString + "\n" + arrayFloat);
+
+                Intent charts = new Intent(Statistic.this, Charts.class);
+                charts.putExtra("arrayString", arrayString);
+                charts.putExtra("arrayFloat", arrayFloat);
+                startActivity(charts);
                 break;
 
             default:
