@@ -316,6 +316,18 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
         svQuery = svSearch.getQuery().toString();
 
+        if (TextUtils.isEmpty(etMoreExpensive.getText().toString())) {
+            flExpDown = 0;
+        } else {
+            flExpDown = Float.parseFloat(etMoreExpensive.getText().toString());
+        }
+
+        if (TextUtils.isEmpty(etLessExpensive.getText().toString())) {
+            flExpTop = 9999999;
+        } else {
+            flExpTop = Float.parseFloat(etLessExpensive.getText().toString());
+        }
+
         TBobj.TableForEveryPurch(startDateLong, endDateLong, svQuery);
     }
 

@@ -202,7 +202,18 @@ public class TablesBuilding extends Activity {
         });
         registerForContextMenu(row);
 
+        row.setOnClickListener(onClickListenerEG);
     }
+
+    View.OnClickListener onClickListenerEG = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            v.setBackgroundColor(Color.GRAY);
+            showPopupMenuEG(v);
+            tableRowID = table.indexOfChild(v);
+        }
+    };
 
 
     public void showPopupMenuEG(final View v) {
@@ -232,7 +243,7 @@ public class TablesBuilding extends Activity {
 
                     case R.id.MENU_DELETE:
                         table.removeViewAt(tableRowID);
-                        DBobj.DeleteFromDB(clickedRow, "myPurch");
+                        DBobj.DeleteFromDB(clickedRow, "mytable");
                         break;
 
                     case R.id.MENU_COMMENT:
@@ -410,10 +421,21 @@ public class TablesBuilding extends Activity {
                 return true;
             }
         });
+        row.setOnClickListener(onClickListenerStat);
         registerForContextMenu(row);
-
-
     }
+
+    View.OnClickListener onClickListenerStat = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            v.setBackgroundColor(Color.GRAY);
+            showPopupQueries(v, context);
+
+            tableRowID = table.indexOfChild(v);
+        }
+
+    };
 
     public void showPopupQueries(final View v, final Context context) {
         popup = new PopupMenu(context, v);
@@ -499,7 +521,6 @@ public class TablesBuilding extends Activity {
             String strCost = getVectForEveryday.get(1);
             StatTableEverySmth(strDate, strCost, 1);
 
-            float floatCost = Float.parseFloat(strCost);
             arrayString.add(strDate);
             arrayFloat.add(strCost);
         }

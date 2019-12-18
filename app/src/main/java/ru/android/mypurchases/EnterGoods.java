@@ -1,9 +1,15 @@
 package ru.android.mypurchases;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -11,6 +17,10 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,6 +47,8 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
     DataBase DBobj;
 
     TablesBuilding TBobj;
+
+    final String LOG_TAG = "mylogs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +101,7 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
 
 
         DBobj = new DataBase(this);
+        //DBobj.CopyPrevDB();
 
         TBobj = new TablesBuilding(DBobj, this, tablelay, " ID: ", "Дата:",
                 "Продукт:", "Цена:", true);
@@ -177,5 +190,6 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
             etPrice.setText(editVector.get(3));
         }
     }
+
 
 }

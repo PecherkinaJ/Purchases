@@ -5,8 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -22,7 +27,7 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public DataBase(Context context) {
-        super(context, "DataTable", null, 1);
+        super(context, "DataTable", null, 8);
         db = this.getWritableDatabase();
     }
 
@@ -33,17 +38,30 @@ public class DataBase extends SQLiteOpenHelper {
                 + "purchase string,"
                 + "comment string" + ");");
 
-        db.execSQL("create table myPurch ("
+        db.execSQL("create table mytable ("
                 + "id integer primary key autoincrement,"
                 + "date long,"
                 + "good string,"
                 + "price float,"
                 + "comment string" + ");");
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+
+    public void CopyPrevDB(){
+        //String path = "DATA/data/com.example.myapplication/databases/myDB";
+        //db.execSQL("attach database " + path + " as old_db");
+        File data  = Environment.getDataDirectory();
+        String backupDBPath  = "data/com.example.myapplication/databases/myDB";
+        File currentDB  = new File(data, backupDBPath);
+
+        db.execSQL("attach ' " + currentDB + " ' as old_db");
+        db.execSQL(" insert into mytable select * from old_db.mytable", null);
     }
 
 
@@ -53,7 +71,7 @@ public class DataBase extends SQLiteOpenHelper {
     public int getRowsCountEG() {
         long dateToday = System.currentTimeMillis();
         long weekAgo = dateToday - 7 * 1000 * 60 * 60 * 24;
-        Cursor cursor = db.rawQuery("SELECT id, date, good, price FROM myPurch " +
+        Cursor cursor = db.rawQuery("SELECT id, date, good, price FROM mytable " +
                 " WHERE date >= " + weekAgo +
                 " AND date <= " + dateToday, null);
         int count = cursor.getCount();
@@ -68,7 +86,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         long dateToday = System.currentTimeMillis();
         long weekAgo = dateToday - 7 * 1000 * 60 * 60 * 24;
-        Cursor c = db.rawQuery("SELECT id, date, good, price FROM myPurch " +
+        Cursor c = db.rawQuery("SELECT id, date, good, price FROM mytable " +
                 " WHERE date >= " + weekAgo +
                 " AND date <= " + dateToday + " ORDER BY date", null);
 
@@ -98,12 +116,12 @@ public class DataBase extends SQLiteOpenHelper {
         cv.put("good", insertGood);
         cv.put("price", insertPrice);
         cv.put("comment", comment);
-        this.getWritableDatabase().insert("myPurch", null, cv);
+        this.getWritableDatabase().insert("mytable", null, cv);
     }
 
 
     public Vector UpdatingTable() {
-        Cursor c = db.query("mypurch", null, null, null, null, null, null);
+        Cursor c = db.query("mytable", null, null, null, null, null, null);
 
         Vector <String> newValueArray = new Vector<>(4);
 
@@ -131,7 +149,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         rowID = clickedRow;
 
-        Cursor c = db.rawQuery("SELECT id, comment FROM myPurch WHERE ID = " + rowID, null);
+        Cursor c = db.rawQuery("SELECT id, comment FROM mytable WHERE ID = " + rowID, null);
 
         String commentText = new String();
         if (c.moveToFirst()) {
@@ -146,7 +164,7 @@ public class DataBase extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         rowID = clickedRow;
         cv.put("comment", task);
-        int updCount = db.update("myPurch", cv, "id = " + rowID, null);
+        int updCount = db.update("mytable", cv, "id = " + rowID, null);
         Log.d(logs, "updated rows count = " + updCount + ", добавлено: " + task);
     }
 
@@ -156,13 +174,13 @@ public class DataBase extends SQLiteOpenHelper {
         cv.put("date", date);
         cv.put("good", good);
         cv.put("price", price);
-        db.update("myPurch", cv, "id = " + rowID, null);
+        db.update("mytable", cv, "id = " + rowID, null);
     }
 
 
     public Vector RecreatedRow(){
         Vector<String> updatedDBRow= new Vector<>();
-        Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE ID = " + rowID, null);
+        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE ID = " + rowID, null);
         if (c.moveToFirst()) {
             String IDText = c.getString(c.getColumnIndex("id"));
 
@@ -194,7 +212,7 @@ public class DataBase extends SQLiteOpenHelper {
     public Vector GetDataToEdition(int clickedRow) {
         rowID = clickedRow;
         Vector<String> editVector = new Vector<>();
-        Cursor c = db.rawQuery("SELECT id, date, good, price FROM myPurch WHERE id = " + rowID, null);
+        Cursor c = db.rawQuery("SELECT id, date, good, price FROM mytable WHERE id = " + rowID, null);
         if (c.moveToFirst()) {
             long a = c.getLong(c.getColumnIndex("date"));
             GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
@@ -223,7 +241,7 @@ public class DataBase extends SQLiteOpenHelper {
                                       long endDateLong,
                                       String svQuery,
                                       String orderBy) {
-        Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE PRICE >=" + flExpDown + " AND PRICE <=" + flExpTop + "  "
+        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE PRICE >=" + flExpDown + " AND PRICE <=" + flExpTop + "  "
                 + "and date >= " + startDateLong + " and date <= " + endDateLong + " AND GOOD LIKE '%" + svQuery + "%' " +
                 " ORDER BY " + orderBy, null);
         int count = c.getCount();
@@ -241,7 +259,7 @@ public class DataBase extends SQLiteOpenHelper {
                                  int num){
 
         Vector<String> vectQuery = new Vector<>();
-        Cursor c = db.rawQuery("SELECT * FROM myPurch WHERE PRICE >=" + flExpDown + " AND PRICE <=" + flExpTop + "  "
+        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE PRICE >=" + flExpDown + " AND PRICE <=" + flExpTop + "  "
                 + "and date >= " + startDateLong + " and date <= " + endDateLong + " AND GOOD LIKE '%" + svQuery + "%' " +
                 " ORDER BY " + orderBy + " , date", null);
         if (c.moveToPosition(num)) {
@@ -268,7 +286,7 @@ public class DataBase extends SQLiteOpenHelper {
     public int getRowsCountStat_everyday(long startDateLong, long endDateLong) {
         Cursor c = db.rawQuery("SELECT SUM(PRICE) AS summarize, date, " +
                 " strftime('%d.%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) as totalInDate" +
-                " FROM myPurch " +
+                " FROM mytable " +
                 " WHERE date >= " + startDateLong + " and date <= " + endDateLong +
                 " GROUP BY totalInDate ORDER BY date", null);
         int count = c.getCount();
@@ -281,7 +299,7 @@ public class DataBase extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT SUM(price) as summarize, date, " +
                 " strftime('%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) " +
                 " AS months " +
-                " FROM myPurch " +
+                " FROM mytable " +
                 " GROUP BY months ORDER BY date", null);
         int count = c.getCount();
         c.close();
@@ -290,7 +308,7 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public int getRowsCountStat_everypurch(long startDateLong, long endDateLong, String svQuery) {
-        Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from myPurch" +
+        Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from mytable" +
                 " where date >= " + startDateLong + " and date <= " + endDateLong +
                 " AND good LIKE '%" + svQuery + "%' " +
                 " GROUP BY good ORDER BY summarize", null);
@@ -307,7 +325,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         Cursor c = db.rawQuery("SELECT SUM(PRICE) AS summarize, date, " +
                 " strftime('%d.%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) as totalInDate" +
-                " FROM myPurch " +
+                " FROM mytable " +
                 " WHERE date >= " + startDateLong + " and date <= " + endDateLong +
                 " GROUP BY totalInDate ORDER BY date", null);
         if (c.moveToPosition(num)) {
@@ -326,7 +344,7 @@ public class DataBase extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT SUM(price) as summarize, date, " +
                 " strftime('%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) " +
                 " AS months " +
-                " FROM myPurch " +
+                " FROM mytable " +
                 " GROUP BY months ORDER BY date", null);
 
         if (c.moveToPosition(num)) {
@@ -338,11 +356,14 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public Vector EveryPurchTable(int num, long startDateLong, long endDateLong, String svQuery){
+    public Vector EveryPurchTable(int num,
+                                  long startDateLong,
+                                  long endDateLong,
+                                  String svQuery){
 
         Vector<String> everyDayVector = new Vector<>();
 
-        Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from myPurch" +
+        Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from mytable" +
                 " where date >= " + startDateLong + " and date <= " + endDateLong +
                 " AND good LIKE '%" + svQuery + "%' " +
                 " GROUP BY good ORDER BY summarize", null);
