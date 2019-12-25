@@ -166,10 +166,19 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnShowTable:
-                if (posOfSpin == 0 || posOfSpin == 1 || posOfSpin == 2) Queries();
-                if (posOfSpin == 3) TotalForEveryDay();
-                if (posOfSpin == 4) TotalForEveryMonth();
-                if (posOfSpin == 5) TotalForEveryPurch();
+                switch(posOfSpin) {
+                    case 3:
+                        TotalForEveryDay();
+                        break;
+                    case 4:
+                        TotalForEveryMonth();
+                        break;
+                    case 5:
+                        TotalForEveryPurch();
+                        break;
+                    default:
+                        Queries();
+                }
                 break;
 
             case R.id.btnShowGraph:

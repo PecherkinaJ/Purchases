@@ -13,19 +13,20 @@ import android.view.View;
 import android.widget.Button;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button goodent;
     Button stat;
     Button futPurch;
+    Button settings;
 
     Intent GoodIntent;
     Intent Statistic;
     Intent FuturePurchases;
+    Intent Settings;
+    Saving save;
 
     final String LOG_TAG = "myLogs";
 
@@ -34,22 +35,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        isStoragePermissionGranted();
-        importDBfromSD();
+        boolean a = isStoragePermissionGranted();
+        save = new Saving();
+        //save.exportDBfromSD();
 
         GoodIntent = new Intent(this, EnterGoods.class);
         Statistic = new Intent(this, Statistic.class);
         FuturePurchases = new Intent(this, FuturePurchases.class);
+        Settings = new Intent(this, Settings.class);
 
-
-        goodent = (Button) findViewById(R.id.goodent);
+        goodent = findViewById(R.id.goodent);
         goodent.setOnClickListener(this);
 
-        stat = (Button) findViewById(R.id.stat);
+        stat = findViewById(R.id.stat);
         stat.setOnClickListener(this);
 
-        futPurch = (Button) findViewById(R.id.futPurch);
+        futPurch = findViewById(R.id.futPurch);
         futPurch.setOnClickListener(this);
+
+        settings = findViewById(R.id.settings);
+        settings.setOnClickListener(this);
     }
 
 
@@ -64,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.futPurch:
                 startActivity(FuturePurchases);
                 break;
+            case R.id.settings:
+                startActivity(Settings);
             default:
                 break;
         }
@@ -72,79 +79,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onDestroy() {
         super.onDestroy();
-            isStoragePermissionGranted();
-            exportDBtoSD();
+        //save.importDBtoSD();
     }
 
 
-    public void importDBfromSD() {
-        try {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
-
-            if (sd.canWrite()) {
-                String backupDBPath = "com.Purchases.backup/myDB";
-                String currentDBPath = "data/ru.android.mypurchases/databases/DataTable";
-                File backupDB = new File(data, currentDBPath);
-                File currentDB = new File(sd, backupDBPath);
-
-                FileChannel src = new FileInputStream(currentDB).getChannel();
-                FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                Log.d(LOG_TAG, "trasfered? " + dst.transferFrom(src, 0, src.size()));
-                src.close();
-                dst.close();
-                Log.d("mylogs", "Copied to " + backupDB.toString());
-            }
-
-        } catch (Exception e) {
-            Log.d("mylogs", "" + e.toString());
-        }
-    }
-
-
-
-    private void exportDBtoSD() {
-        // TODO Auto-generated method stub
-
-        try {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
-
-            if (sd.canWrite()) {
-                String currentDBPath = "data/ru.android.mypurchases/databases/DataTable";
-                String backupDBPath = "com.Purchases.backup/myDB";
-                File currentDB = new File(data, currentDBPath);
-                File backupDB = new File(sd, backupDBPath);
-
-                FileChannel src = new FileInputStream(currentDB).getChannel();
-                FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                src.close();
-                dst.close();
-                Log.d(LOG_TAG, "Copied from " + backupDB.toString());
-
-            }
-        } catch (Exception e) {
-
-            Log.d(LOG_TAG, "" + e.toString());
-
-        }
-    }
-
-
-    public  boolean isStoragePermissionGranted() {
+    public boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 Log.d(LOG_TAG,"Permission is granted");
-                File dir = new File(Environment.getExternalStorageDirectory().getPath()+"/"+ "/com.Purchases.backup");
+                File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/com.Purchases.backup");
                 if (!dir.exists()) {
                     try {
                         dir.mkdirs();
                         Log.d(LOG_TAG, "File created " + dir);
                     } catch (Exception except){
-                        Log.d(LOG_TAG, "exception="+except);
+                        Log.d(LOG_TAG, "exception=" + except);
                     }
                 }
                 return true;
@@ -156,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else { //permission is automatically granted on sdk<23 upon installation
             Log.d(LOG_TAG,"Permission is granted");
-            File dir = new File(Environment.getExternalStorageDirectory().getPath()+"/"+ "/com.Purchases.backup");
+            File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/com.Purchases.backup");
             if (!dir.exists()) {
                 try {
                     dir.mkdirs();

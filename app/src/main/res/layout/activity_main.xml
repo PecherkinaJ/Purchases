@@ -41,7 +41,7 @@
         android:text="Не забыть купить" />
 
     <Button
-        android:id="@+id/pref"
+        android:id="@+id/settings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

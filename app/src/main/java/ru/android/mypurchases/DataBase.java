@@ -278,6 +278,9 @@ public class DataBase extends SQLiteOpenHelper {
             vectQuery.add(2, strGood);
             vectQuery.add(3, strPrice);
             vectQuery.add(4, strComm);
+
+            Log.d("mylogs", "Данные: " + strID + " " + strDate + " " +
+                    strGood + " " + strPrice + "  " + strComm);
         }
         return vectQuery;
     }
