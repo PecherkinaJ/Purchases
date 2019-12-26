@@ -14,7 +14,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="center"
-        android:text="Ввод покупок" />
+        android:text="Ввод покупок"
+        android:textAllCaps="false"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/stat"
@@ -26,7 +28,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="center"
-        android:text="Статистика покупок" />
+        android:text="Статистика покупок"
+        android:textAllCaps="false"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/futPurch"
@@ -38,7 +42,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="center"
-        android:text="Не забыть купить" />
+        android:text="Не забыть купить"
+        android:textAllCaps="false"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/settings"
@@ -50,6 +56,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="center"
-        android:text="Настройки" />
+        android:text="Настройки"
+        android:textAllCaps="false"
+        android:textSize="18sp" />
 
 </LinearLayout>
