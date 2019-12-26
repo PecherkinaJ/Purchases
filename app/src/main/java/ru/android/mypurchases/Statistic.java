@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -138,8 +139,40 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 posOfSpin = position;
-                if (position == 0 || position == 1 || position == 2) {btnShowGraph.setEnabled(false);}
+                if (position == 0 || position == 1 || position == 2) {
+                    btnShowGraph.setEnabled(false);
+                    enableSearchView(svSearch, true);
+                    enableSearchView(etDateBuy, true);
+                    enableSearchView(etDateBuyEnd, true);
+                    enableSearchView(etMoreExpensive, true);
+                    enableSearchView(etLessExpensive, true);
+                }
                 else {btnShowGraph.setEnabled(true);}
+
+                if (position == 3) {
+                    enableSearchView(svSearch, false);
+                    enableSearchView(etMoreExpensive, false);
+                    enableSearchView(etLessExpensive, false);
+                    enableSearchView(etDateBuy, true);
+                    enableSearchView(etDateBuyEnd, true);
+                }
+
+                if (position == 4) {
+                    enableSearchView(svSearch, false);
+                    enableSearchView(etDateBuy, false);
+                    enableSearchView(etDateBuyEnd, false);
+                    enableSearchView(etMoreExpensive, false);
+                    enableSearchView(etLessExpensive, false);
+                }
+
+                if (position == 5) {
+                    enableSearchView(svSearch, true);
+                    enableSearchView(etDateBuy, false);
+                    enableSearchView(etDateBuyEnd, false);
+                    enableSearchView(etMoreExpensive, false);
+                    enableSearchView(etLessExpensive, false);
+                }
+
             }
 
             @Override
@@ -338,6 +371,17 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         }
 
         TBobj.TableForEveryPurch(startDateLong, endDateLong, svQuery);
+    }
+
+    private void enableSearchView(View view, boolean enabled) {
+        view.setEnabled(enabled);
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                enableSearchView(child, enabled);
+            }
+        }
     }
 
 }
