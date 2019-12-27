@@ -46,7 +46,7 @@ public class Saving {
     }
 
 
-    void importDBfromSD() {
+    boolean importDBfromSD() {
         // TODO Auto-generated method stub
         try {
             File sd = Environment.getExternalStorageDirectory();
@@ -63,11 +63,15 @@ public class Saving {
                 dst.transferFrom(src, 0, src.size());
                 src.close();
                 dst.close();
-                Log.d(LOG_TAG, "Copied from " + backupDB.toString());
+                Log.d(LOG_TAG, "Copied to " + backupDB.toString());
+                return true;
             }
-        } catch (Exception e) {
-            Log.d(LOG_TAG, "" + e.toString());
         }
+        catch (Exception e) {
+            Log.d(LOG_TAG, "" + e.toString());
+            return false;
+        }
+        return false;
     }
 
 }

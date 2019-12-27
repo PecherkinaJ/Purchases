@@ -106,16 +106,16 @@ public class TablesBuilding extends Activity {
         good1.setLayoutParams(rowParams);
         price1.setLayoutParams(rowParams);
         com1.setLayoutParams(rowParams);
-        ID1.setTextSize(23);
+        ID1.setTextSize(20);
         ID1.setPadding(25, 5, 25, 5);
         ID1.setTypeface(null, Typeface.BOLD_ITALIC);
-        date1.setTextSize(23);
+        date1.setTextSize(20);
         date1.setPadding(25, 5, 25, 5);
         date1.setTypeface(null, Typeface.BOLD_ITALIC);
-        good1.setTextSize(23);
+        good1.setTextSize(20);
         good1.setPadding(25, 5, 25, 5);
         good1.setTypeface(null, Typeface.BOLD_ITALIC);
-        price1.setTextSize(23);
+        price1.setTextSize(20);
         price1.setPadding(25, 5, 25, 5);
         price1.setTypeface(null, Typeface.BOLD_ITALIC);
         price1.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
@@ -167,11 +167,11 @@ public class TablesBuilding extends Activity {
         tvPrice.setLayoutParams(rowParams);
 
         tvID.setTextSize(1);
-        tvDate.setTextSize(17);
+        tvDate.setTextSize(15);
         tvDate.setPadding(5, 5, 5, 20);
-        tvGood.setTextSize(18);
+        tvGood.setTextSize(16);
         tvGood.setPadding(5, 5, 5, 20);
-        tvPrice.setTextSize(18);
+        tvPrice.setTextSize(16);
         tvPrice.setPadding(35, 5, 15, 20);
         tvPrice.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
 
@@ -325,10 +325,10 @@ public class TablesBuilding extends Activity {
         TextView date1 = new TextView(context);
         ID1.setLayoutParams(rowParams);
         date1.setLayoutParams(rowParams);
-        ID1.setTextSize(23);
+        ID1.setTextSize(20);
         ID1.setPadding(25, 5, 25, 5);
         ID1.setTypeface(null, Typeface.BOLD_ITALIC);
-        date1.setTextSize(23);
+        date1.setTextSize(20);
         date1.setPadding(25, 5, 25, 5);
         date1.setTypeface(null, Typeface.BOLD_ITALIC);
 
@@ -382,11 +382,11 @@ public class TablesBuilding extends Activity {
         tvPrice.setLayoutParams(rowParams);
 
         tvID.setTextSize(1);
-        tvDate.setTextSize(17);
+        tvDate.setTextSize(15);
         tvDate.setPadding(5, 5, 5, 20);
-        tvGood.setTextSize(18);
+        tvGood.setTextSize(16);
         tvGood.setPadding(5, 5, 5, 20);
-        tvPrice.setTextSize(18);
+        tvPrice.setTextSize(16);
         tvPrice.setPadding(35, 5, 15, 20);
         tvPrice.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
 
@@ -584,9 +584,9 @@ public class TablesBuilding extends Activity {
         tvID.setLayoutParams(rowParams);
         tvDate.setLayoutParams(rowParams);
 
-        tvID.setTextSize(17);
+        tvID.setTextSize(15);
         tvID.setPadding(5, 5, 5, 20);
-        tvDate.setTextSize(17);
+        tvDate.setTextSize(15);
         tvDate.setPadding(5, 5, 5, 20);
 
         tvID.setText(firstCol);
@@ -640,7 +640,7 @@ public class TablesBuilding extends Activity {
         tvID.setLayoutParams(rowParams);
         tvGood.setLayoutParams(rowParams);
 
-        tvGood.setTextSize(22);
+        tvGood.setTextSize(20);
         tvGood.setPadding(5, 5, 5, 30);
 
         tvID.setText(firstCol);
