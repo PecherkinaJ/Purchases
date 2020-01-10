@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -227,6 +228,11 @@ public class TablesBuilding extends Activity {
 
         clickedRow = Integer.parseInt(IDText1);
         Log.d("mylogs", "clicked row = " + clickedRow);
+
+        if (ifEdition) {
+            Menu popupMenu = popup.getMenu();
+            popupMenu.findItem(R.id.MENU_DELETE).setVisible(false);
+        }
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -460,6 +466,11 @@ public class TablesBuilding extends Activity {
                         ShowComment();
                         break;
 
+                    case R.id.MENU_DELETE:
+                        table.removeViewAt(tableRowID);
+                        DBobj.DeleteFromDB(clickedRow, "mytable");
+                        break;
+
                     default:
                         return false;
                 }
@@ -689,7 +700,19 @@ public class TablesBuilding extends Activity {
 
         clickedRow = Integer.parseInt(IDText1);
 
+        final FuturePurchases FP = (FuturePurchases) context;
+
+        if (ifEdition) {
+            Menu popupMenu = popup.getMenu();
+            popupMenu.findItem(R.id.MENU_DELETE).setVisible(false);
+        }
+        else {
+            Menu popupMenu = popup.getMenu();
+            popupMenu.findItem(R.id.MENU_DELETE).setVisible(true);
+        }
+
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
 
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -702,7 +725,6 @@ public class TablesBuilding extends Activity {
 
                     case R.id.MENU_EDIT:
                         ifEdition = true;
-                        FuturePurchases FP = (FuturePurchases) context;
                         FP.EditionTable();
                         break;
 

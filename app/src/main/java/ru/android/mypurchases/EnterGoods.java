@@ -169,6 +169,7 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
                 }
 
             case R.id.btnCancel:
+                TBobj.ifEdition = false;
                 etGoods.setText("");
                 etPrice.setText("");
                 break;

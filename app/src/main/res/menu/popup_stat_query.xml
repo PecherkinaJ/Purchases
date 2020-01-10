@@ -2,5 +2,8 @@
     <item
         android:id="@+id/MENU_COMMENT"
         android:title="Показать комментарий"/>
+    <item
+        android:id="@+id/MENU_DELETE"
+        android:title="Удалить элемент"/>
 
 </menu>
