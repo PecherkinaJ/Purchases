@@ -23,6 +23,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Comment;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -347,22 +349,85 @@ public class TablesBuilding extends Activity {
     }
 
 
-    public void QueryTableForStat(float flExpDown,
-                                  float flExpTop,
-                                  long startDateLong,
-                                  long endDateLong,
-                                  String svQuery,
-                                  String orderBy) {
+
+    public void GeneralTableInStatistic(String firstCol,
+                                        String secCol,
+                                        int tableRowNum){
+
+        row = new TableRow(context);
+        row.setLayoutParams(tableParams);
+
+        tvID = new TextView(context);
+        tvDate = new TextView(context);
+
+        tvID.setLayoutParams(rowParams);
+        tvDate.setLayoutParams(rowParams);
+
+        tvID.setTextSize(15);
+        tvID.setPadding(5, 5, 5, 20);
+        tvDate.setTextSize(15);
+        tvDate.setPadding(5, 5, 5, 20);
+
+        tvID.setText(firstCol);
+        tvDate.setText(secCol);
+
+        row.addView(tvID);
+        row.addView(tvDate);
+
+        table.addView(row, tableRowNum);
+    }
+
+
+    public void TableForQueries(float flExpDown,
+                                float flExpTop,
+                                long startDateLong,
+                                long endDateLong,
+                                String svQuery,
+                                String orderBy) {
+
         table.removeAllViews();
         HeadRow("id", "Дата:", "Продукт:", "Цена:", true);
-        for (int i=0; i<DBobj.getRowsCountStat_query(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy); i++) {
-            Vector <String> getVectForQueries = DBobj.TableOfQueries(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy, i);
-            String strID = getVectForQueries.get(0);
-            String strDate = getVectForQueries.get(1);
-            String strGood = getVectForQueries.get(2);
-            String strPrice = getVectForQueries.get(3);
-            String strComm = getVectForQueries.get(4);
-            StatTableQueries(strID, strDate, strGood, strPrice, strComm, true, 1);
+
+        if (flExpTop == 0) {
+            for (int i=0; i<DBobj.getRowsCountStat_queryNOMAXPRICE(startDateLong, endDateLong, flExpDown, svQuery, orderBy); i++) {
+                Vector <String> getVectForQueries = DBobj.TableOfQueries_NOMAXPRICE(startDateLong, endDateLong, flExpDown, svQuery, orderBy, i);
+                String strID = getVectForQueries.get(0);
+                String strDate = getVectForQueries.get(1);
+                String strGood = getVectForQueries.get(2);
+                String strPrice = getVectForQueries.get(3);
+                String strComm = getVectForQueries.get(4);
+                StatTableQueries(strID, strDate, strGood, strPrice, strComm, true, 1);
+            }
+        } else if (flExpTop == 0 && startDateLong == 0) {
+            for (int i=0; i<DBobj.getRowsCountStat_queryNOMAXPRICEandDATE(endDateLong, flExpDown, svQuery, orderBy); i++) {
+                Vector <String> getVectForQueries = DBobj.TableOfQueries_NOMAXPRICEandDATE(endDateLong, flExpDown, svQuery, orderBy, i);
+                String strID = getVectForQueries.get(0);
+                String strDate = getVectForQueries.get(1);
+                String strGood = getVectForQueries.get(2);
+                String strPrice = getVectForQueries.get(3);
+                String strComm = getVectForQueries.get(4);
+                StatTableQueries(strID, strDate, strGood, strPrice, strComm, true, 1);
+            }
+        } else if (startDateLong == 0) {
+            for (int i=0; i<DBobj.getRowsCountStat_queryNODATE(flExpDown, flExpTop, endDateLong, svQuery, orderBy); i++) {
+                Vector <String> getVectForQueries = DBobj.TableOfQueries_NODATE(flExpDown, flExpTop, endDateLong, svQuery, orderBy, i);
+                String strID = getVectForQueries.get(0);
+                String strDate = getVectForQueries.get(1);
+                String strGood = getVectForQueries.get(2);
+                String strPrice = getVectForQueries.get(3);
+                String strComm = getVectForQueries.get(4);
+                StatTableQueries(strID, strDate, strGood, strPrice, strComm, true, 1);
+            }
+        } else {
+            for (int i = 0; i < DBobj.getRowsCountStat_queryALLDATA(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy); i++) {
+                Vector<String> getVectForQueries = DBobj.TableOfQueries_ALLDATA(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy, i);
+                String strID = getVectForQueries.get(0);
+                String strDate = getVectForQueries.get(1);
+                String strGood = getVectForQueries.get(2);
+                String strPrice = getVectForQueries.get(3);
+                String strComm = getVectForQueries.get(4);
+                StatTableQueries(strID, strDate, strGood, strPrice, strComm, true, 1);
+            }
         }
     }
 
@@ -430,6 +495,7 @@ public class TablesBuilding extends Activity {
         row.setOnClickListener(onClickListenerStat);
         registerForContextMenu(row);
     }
+
 
     View.OnClickListener onClickListenerStat = new View.OnClickListener() {
         @Override
@@ -526,14 +592,27 @@ public class TablesBuilding extends Activity {
         table.setColumnStretchable(0, true);
         table.setColumnStretchable(1, true);
         HeadRow("Дата:", "Общая стоимость:");
-        for (int i=0; i<DBobj.getRowsCountStat_everyday(startDateLong, endDateLong); i++) {
-            Vector <String> getVectForEveryday = DBobj.EveryDayTable(i, startDateLong, endDateLong);
-            String strDate = getVectForEveryday.get(0);
-            String strCost = getVectForEveryday.get(1);
-            StatTableEverySmth(strDate, strCost, 1);
 
-            arrayString.add(strDate);
-            arrayFloat.add(strCost);
+        if (startDateLong == 0) {
+            for (int i = 0; i < DBobj.getRowsCountStat_everyday(endDateLong); i++) {
+                Vector<String> getVectForEveryday = DBobj.EveryDayTable(i, endDateLong);
+                String strDate = getVectForEveryday.get(0);
+                String strCost = getVectForEveryday.get(1);
+                GeneralTableInStatistic(strDate, strCost, 1);
+
+                arrayString.add(strDate);
+                arrayFloat.add(strCost);
+            }
+        } else {
+            for (int i = 0; i < DBobj.getRowsCountStat_everyday(startDateLong, endDateLong); i++) {
+                Vector<String> getVectForEveryday = DBobj.EveryDayTable(i, startDateLong, endDateLong);
+                String strDate = getVectForEveryday.get(0);
+                String strCost = getVectForEveryday.get(1);
+                GeneralTableInStatistic(strDate, strCost, 1);
+
+                arrayString.add(strDate);
+                arrayFloat.add(strCost);
+            }
         }
         //Log.d("mylogs", "Arrays: " + arrayString + "\n" + arrayFloat);
     }
@@ -550,7 +629,7 @@ public class TablesBuilding extends Activity {
             Vector <String> getVectForEverymonth = DBobj.EveryMonthTable(i);
             String strDate = getVectForEverymonth.get(0);
             String strCost = getVectForEverymonth.get(1);
-            StatTableEverySmth(strDate, strCost, 1);
+            GeneralTableInStatistic(strDate, strCost, 1);
 
             float floatCost = Float.parseFloat(strCost);
             arrayString.add(strDate);
@@ -568,46 +647,34 @@ public class TablesBuilding extends Activity {
         table.setColumnStretchable(0, true);
         table.setColumnStretchable(1, true);
         HeadRow("Покупка:", "Потрачено:");
-        for (int i=0; i<DBobj.getRowsCountStat_everypurch(startDateLong, endDateLong, svQuery); i++) {
-            Vector <String> getVectForEverypurch = DBobj.EveryPurchTable(i, startDateLong, endDateLong, svQuery);
-            String strDate = getVectForEverypurch.get(0);
-            String strCost = getVectForEverypurch.get(1);
-            StatTableEverySmth(strDate, strCost, 1);
 
-            float floatCost = Float.parseFloat(strCost);
-            arrayString.add(strDate);
-            arrayFloat.add(strCost);
+        if (startDateLong == 0) {
+            for (int i = 0; i < DBobj.getRowsCountStat_everypurch(endDateLong, svQuery); i++) {
+                Vector<String> getVectForEverypurch = DBobj.EveryPurchTable(i, endDateLong, svQuery);
+                String strDate = getVectForEverypurch.get(0);
+                String strCost = getVectForEverypurch.get(1);
+                GeneralTableInStatistic(strDate, strCost, 1);
+
+                arrayString.add(strDate);
+                arrayFloat.add(strCost);
+                //Log.d("mylogs", "startDay is 0!!!");
+            }
+        } else {
+            for (int i = 0; i < DBobj.getRowsCountStat_everypurch(startDateLong, endDateLong, svQuery); i++) {
+                Vector<String> getVectForEverypurch = DBobj.EveryPurchTable(i, startDateLong, endDateLong, svQuery);
+                String strDate = getVectForEverypurch.get(0);
+                String strCost = getVectForEverypurch.get(1);
+                GeneralTableInStatistic(strDate, strCost, 1);
+
+                arrayString.add(strDate);
+                arrayFloat.add(strCost);
+                //Log.d("mylogs", "startDay is NOT 0!!!");
+
+            }
         }
         //Log.d("mylogs", "Arrays: " + arrayString + "\n" + arrayFloat);
     }
 
-
-    public void StatTableEverySmth(String firstCol,
-                               String secCol,
-                               int tableRowNum){
-
-        row = new TableRow(context);
-        row.setLayoutParams(tableParams);
-
-        tvID = new TextView(context);
-        tvDate = new TextView(context);
-
-        tvID.setLayoutParams(rowParams);
-        tvDate.setLayoutParams(rowParams);
-
-        tvID.setTextSize(15);
-        tvID.setPadding(5, 5, 5, 20);
-        tvDate.setTextSize(15);
-        tvDate.setPadding(5, 5, 5, 20);
-
-        tvID.setText(firstCol);
-        tvDate.setText(secCol);
-
-        row.addView(tvID);
-        row.addView(tvDate);
-
-        table.addView(row, tableRowNum);
-    }
 
 
     /* FUTURE PURCHASES */

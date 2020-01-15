@@ -29,13 +29,16 @@ public class Saving {
                 File currentDB = new File(data, currentDBPath);
                 File backupDB = new File(sd, backupDBPath);
 
+                File backUp1 = new File(sd, "/com.Purchases.backup/");
+
                 FileChannel src = new FileInputStream(currentDB).getChannel();
                 FileChannel dst = new FileOutputStream(backupDB).getChannel();
                 dst.transferFrom(src, 0, src.size());
                 src.close();
                 dst.close();
                 Log.d("mylogs", "Copied to " + backupDB.toString());
-                path = backupDB.toString();
+
+                path = backUp1.toString();
             }
 
         } catch (Exception e) {

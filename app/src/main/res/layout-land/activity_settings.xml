@@ -8,7 +8,6 @@
         android:id="@+id/tvExport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
         android:text="TextView" />
 
     <Button
@@ -34,7 +33,7 @@
         android:id="@+id/tvImport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:text="TextView" />
 
     <Button

@@ -1,7 +1,9 @@
 package ru.android.mypurchases;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -55,6 +57,7 @@ public class Settings extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         boolean a = isStoragePermissionGranted();
+
         switch (v.getId()){
             case R.id.btnExport:
                 if (a) {
@@ -74,6 +77,7 @@ public class Settings extends AppCompatActivity implements View.OnClickListener{
                     Toast.makeText(this, "Нет доступа к файловой системе либо файла не существует", Toast.LENGTH_LONG).show();
                 }
                 break;
+
             default:
                 break;
         }
