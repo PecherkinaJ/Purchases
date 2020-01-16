@@ -53,31 +53,7 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public void CopyPrevDB(){
-        //String path = "DATA/data/com.example.myapplication/databases/myDB";
-        //db.execSQL("attach database " + path + " as old_db");
-        File data  = Environment.getDataDirectory();
-        String backupDBPath  = "data/com.example.myapplication/databases/myDB";
-        File currentDB  = new File(data, backupDBPath);
-
-        db.execSQL("attach ' " + currentDB + " ' as old_db");
-        db.execSQL(" insert into mytable select * from old_db.mytable", null);
-    }
-
-
-    void ChangeSomeData(){
-        ContentValues cv = new ContentValues();
-        cv.put("good", "аптека");
-        db.update("mytable", cv, "id = " + 32, null);
-        db.update("mytable", cv, "id = " + 66, null);
-        db.update("mytable", cv, "id = " + 217, null);
-        db.update("mytable", cv, "id = " + 245, null);
-        db.update("mytable", cv, "id = " + 420, null);
-    }
-
-
-
-    /* ENTER GOODS */
+/* ENTER GOODS */
 
     public int getRowsCountEG() {
         long dateToday = System.currentTimeMillis();
@@ -246,21 +222,30 @@ public class DataBase extends SQLiteOpenHelper {
 
     /* STATISTICS */
 
-    public int getRowsCountStat_queryALLDATA(float flExpDown,
+    public int getRowsCountStat_query(float flExpDown,
                                       float flExpTop,
                                       long startDateLong,
                                       long endDateLong,
                                       String svQuery,
                                       String orderBy) {
-        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE PRICE >=" + flExpDown + " AND PRICE <=" + flExpTop + "  "
-                + "and date >= " + startDateLong + " and date <= " + endDateLong + " AND GOOD LIKE '%" + svQuery + "%' " +
-                " ORDER BY " + orderBy, null);
+        String minPrice, maxPrice, minDate, maxDate;
+
+        if (flExpDown != 0) {minPrice = " PRICE >=" + flExpDown + " AND ";} else {minPrice = "";}
+        if (flExpTop != 0) {maxPrice = " PRICE <=" + flExpTop + " AND ";} else {maxPrice = "";}
+        if (startDateLong != 0) {minDate = " date >= " + startDateLong + " AND ";} else {minDate = "";}
+        if (endDateLong != 0) {maxDate = " date <= " + endDateLong;} else {maxDate = "";}
+
+        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE "
+                + minPrice + maxPrice + minDate + maxDate
+                + " GOOD LIKE '%" + svQuery + "%' " +
+                " ORDER BY " + orderBy + " , date", null);
+
         int count = c.getCount();
         c.close();
         return count;
     }
 
-    public Vector TableOfQueries_ALLDATA(float flExpDown,
+    public Vector TableOfQueries(float flExpDown,
                                  float flExpTop,
                                  long startDateLong,
                                  long endDateLong,
@@ -269,9 +254,19 @@ public class DataBase extends SQLiteOpenHelper {
                                  int num){
 
         Vector<String> vectQuery = new Vector<>();
-        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE PRICE >=" + flExpDown + " AND PRICE <=" + flExpTop + "  "
-                + "and date >= " + startDateLong + " and date <= " + endDateLong + " AND GOOD LIKE '%" + svQuery + "%' " +
+
+        String minPrice, maxPrice, minDate, maxDate;
+
+        if (flExpDown != 0) {minPrice = " PRICE >=" + flExpDown + " AND ";} else {minPrice = "";}
+        if (flExpTop != 0) {maxPrice = " PRICE <=" + flExpTop + " AND ";} else {maxPrice = "";}
+        if (startDateLong != 0) {minDate = " date >= " + startDateLong + " AND ";} else {minDate = "";}
+        if (endDateLong != 0) {maxDate = " date <= " + endDateLong;} else {maxDate = "";}
+
+        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE "
+                + minPrice + maxPrice + minDate + maxDate
+                + " GOOD LIKE '%" + svQuery + "%' " +
                 " ORDER BY " + orderBy + " , date", null);
+
         if (c.moveToPosition(num)) {
             long a = c.getLong(c.getColumnIndex("date"));
             GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
@@ -288,172 +283,21 @@ public class DataBase extends SQLiteOpenHelper {
             vectQuery.add(2, strGood);
             vectQuery.add(3, strPrice);
             vectQuery.add(4, strComm);
-
-            Log.d("mylogs", "Данные: " + strID + " " + strDate + " " +
-                    strGood + " " + strPrice + "  " + strComm);
         }
         return vectQuery;
     }
 
 
-
-    public int getRowsCountStat_queryNOMAXPRICE(long startDateLong,
-                                      long endDateLong,
-                                      float flExpDown,
-                                      String svQuery,
-                                      String orderBy) {
-        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE price >= " + flExpDown
-                + " AND date >= " + startDateLong + " and date <= " + endDateLong + " AND GOOD LIKE '%" + svQuery + "%' "
-                + " ORDER BY " + orderBy, null);
-        int count = c.getCount();
-        c.close();
-        return count;
-    }
-
-    public Vector TableOfQueries_NOMAXPRICE(long startDateLong,
-                                 long endDateLong,
-                                 float flExpDown,
-                                 String svQuery,
-                                 String orderBy,
-                                 int num){
-
-        Vector<String> vectQuery = new Vector<>();
-        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE price >= " + flExpDown
-                + " AND date >= " + startDateLong + " and date <= " + endDateLong + " AND GOOD LIKE '%" + svQuery + "%' "
-                + " ORDER BY " + orderBy + " , date", null);
-        if (c.moveToPosition(num)) {
-            long a = c.getLong(c.getColumnIndex("date"));
-            GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
-            calendar.setTimeInMillis(a);
-
-            String strID = c.getString(c.getColumnIndex("id"));
-            String strDate = sdf.format(calendar.getTime());
-            String strGood = c.getString(c.getColumnIndex("good"));
-            String strPrice = c.getString(c.getColumnIndex("price"));
-            String strComm = c.getString(c.getColumnIndex("comment"));
-
-            vectQuery.add(0, strID);
-            vectQuery.add(1, strDate);
-            vectQuery.add(2, strGood);
-            vectQuery.add(3, strPrice);
-            vectQuery.add(4, strComm);
-
-            Log.d("mylogs", "Данные: " + strID + " " + strDate + " " +
-                    strGood + " " + strPrice + "  " + strComm);
-        }
-        c.close();
-        return vectQuery;
-    }
-
-
-
-    public int getRowsCountStat_queryNOMAXPRICEandDATE(long endDateLong,
-                                                       float flExpDown,
-                                                       String svQuery,
-                                                       String orderBy) {
-        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE date <= " + endDateLong
-                + " AND price >= " + flExpDown
-                + " AND GOOD LIKE '%" + svQuery + "%' "
-                + " ORDER BY " + orderBy, null);
-        int count = c.getCount();
-        c.close();
-        return count;
-    }
-
-    public Vector TableOfQueries_NOMAXPRICEandDATE(long endDateLong,
-                                                   float flExpDown,
-                                                   String svQuery,
-                                                   String orderBy,
-                                                   int num){
-
-                            Vector<String> vectQuery = new Vector<>();
-                            Cursor c = db.rawQuery("SELECT * FROM mytable WHERE date <= " + endDateLong
-                                    + " AND price >= " + flExpDown
-                                    + " AND GOOD LIKE '%" + svQuery + "%' "
-                                    + " ORDER BY " + orderBy, null);
-                            if (c.moveToPosition(num)) {
-                                long a = c.getLong(c.getColumnIndex("date"));
-                                GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
-                                calendar.setTimeInMillis(a);
-
-                                String strID = c.getString(c.getColumnIndex("id"));
-                                String strDate = sdf.format(calendar.getTime());
-                                String strGood = c.getString(c.getColumnIndex("good"));
-                                String strPrice = c.getString(c.getColumnIndex("price"));
-                                String strComm = c.getString(c.getColumnIndex("comment"));
-
-                                vectQuery.add(0, strID);
-                                vectQuery.add(1, strDate);
-                                vectQuery.add(2, strGood);
-                                vectQuery.add(3, strPrice);
-                                vectQuery.add(4, strComm);
-
-                                Log.d("mylogs", "Данные: " + strID + " " + strDate + " " +
-                                        strGood + " " + strPrice + "  " + strComm);
-                            }
-                            c.close();
-                            return vectQuery;
-                        }
-
-
-    public int getRowsCountStat_queryNODATE(float flExpDown,
-                                              float flExpTop,
-                                              long endDateLong,
-                                              String svQuery,
-                                              String orderBy) {
-        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE price >= " + flExpDown + " AND price <=" + flExpTop
-                + " AND date <= " + endDateLong
-                + " AND GOOD LIKE '%" + svQuery + "%' "
-                + " ORDER BY " + orderBy, null);
-        int count = c.getCount();
-        c.close();
-        return count;
-    }
-
-    public Vector TableOfQueries_NODATE(float flExpDown,
-                                         float flExpTop,
-                                         long endDateLong,
-                                         String svQuery,
-                                         String orderBy,
-                                         int num){
-
-        Vector<String> vectQuery = new Vector<>();
-        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE price >= " + flExpDown + " AND price <= " + flExpTop
-                + " AND date >= " + endDateLong
-                + " AND GOOD LIKE '%" + svQuery + "%' "
-                + " ORDER BY " + orderBy, null);
-        if (c.moveToPosition(num)) {
-            long a = c.getLong(c.getColumnIndex("date"));
-            GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("US/Central"));
-            calendar.setTimeInMillis(a);
-
-            String strID = c.getString(c.getColumnIndex("id"));
-            String strDate = sdf.format(calendar.getTime());
-            String strGood = c.getString(c.getColumnIndex("good"));
-            String strPrice = c.getString(c.getColumnIndex("price"));
-            String strComm = c.getString(c.getColumnIndex("comment"));
-
-            vectQuery.add(0, strID);
-            vectQuery.add(1, strDate);
-            vectQuery.add(2, strGood);
-            vectQuery.add(3, strPrice);
-            vectQuery.add(4, strComm);
-
-            Log.d("mylogs", "Цены в пределах: " + flExpDown + " и " + flExpTop + ". Данные: " + strID + " " + strDate + " " +
-                    strGood + " " + strPrice + "  " + strComm);
-        }
-        c.close();
-        return vectQuery;
-    }
-
-
-/*****************************************************************************/
 
     public int getRowsCountStat_everyday(long startDateLong, long endDateLong) {
+        String minDate, maxDate;
+
+        if (startDateLong != 0) {minDate = " date >= " + startDateLong + " AND ";} else {minDate = "";}
+        if (endDateLong != 0) {maxDate = " date <= " + endDateLong;} else {maxDate = "";}
         Cursor c = db.rawQuery("SELECT SUM(PRICE) AS summarize, date, " +
                 " strftime('%d.%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) as totalInDate" +
                 " FROM mytable " +
-                " WHERE date >= " + startDateLong + " and date <= " + endDateLong +
+                " WHERE " + minDate + maxDate +
                 " GROUP BY totalInDate ORDER BY date", null);
         int count = c.getCount();
         c.close();
@@ -464,41 +308,17 @@ public class DataBase extends SQLiteOpenHelper {
 
         Vector<String> everyDayVector = new Vector<>();
 
-        Cursor c = db.rawQuery("SELECT SUM(PRICE) AS summarize, date, " +
-                " strftime('%d.%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) as totalInDate" +
-                " FROM mytable " +
-                " WHERE date >= " + startDateLong + " and date <= " + endDateLong +
-                " GROUP BY totalInDate ORDER BY date", null);
-        if (c.moveToPosition(num)) {
-            everyDayVector.add(0, c.getString(c.getColumnIndex("totalInDate")));
-            everyDayVector.add(1, c.getString(c.getColumnIndex("summarize")));
-        }
+        String minDate, maxDate;
 
-        return everyDayVector;
-    }
-
-
-
-    public int getRowsCountStat_everyday( long endDateLong) {
-        Cursor c = db.rawQuery("SELECT SUM(PRICE) AS summarize, date, " +
-                " strftime('%d.%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) as totalInDate" +
-                " FROM mytable " +
-                " WHERE date <= " + endDateLong +
-                " GROUP BY totalInDate ORDER BY date", null);
-        int count = c.getCount();
-        c.close();
-        return count;
-    }
-
-    public Vector EveryDayTable(int num, long endDateLong){
-
-        Vector<String> everyDayVector = new Vector<>();
+        if (startDateLong != 0) {minDate = " date >= " + startDateLong + " AND ";} else {minDate = "";}
+        if (endDateLong != 0) {maxDate = " date <= " + endDateLong;} else {maxDate = "";}
 
         Cursor c = db.rawQuery("SELECT SUM(PRICE) AS summarize, date, " +
                 " strftime('%d.%m.%Y', DATE(date / 1000, 'unixepoch', 'localtime')) as totalInDate" +
                 " FROM mytable " +
-                " WHERE date <= " + endDateLong +
+                " WHERE " + minDate + maxDate +
                 " GROUP BY totalInDate ORDER BY date", null);
+
         if (c.moveToPosition(num)) {
             everyDayVector.add(0, c.getString(c.getColumnIndex("totalInDate")));
             everyDayVector.add(1, c.getString(c.getColumnIndex("summarize")));
@@ -541,8 +361,13 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     public int getRowsCountStat_everypurch(long startDateLong, long endDateLong, String svQuery) {
+        String minDate, maxDate;
+
+        if (startDateLong != 0) {minDate = " date >= " + startDateLong + " AND ";} else {minDate = "";}
+        if (endDateLong != 0) {maxDate = " date <= " + endDateLong;} else {maxDate = "";}
+
         Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from mytable" +
-                " where date >= " + startDateLong + " and date <= " + endDateLong +
+                " where " + minDate + maxDate +
                 " AND good LIKE '%" + svQuery + "%' " +
                 " GROUP BY good ORDER BY summarize", null);
         int count = c.getCount();
@@ -558,39 +383,13 @@ public class DataBase extends SQLiteOpenHelper {
 
         Vector<String> everyDayVector = new Vector<>();
 
-        Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from mytable" +
-                " where date >= " + startDateLong + " and date <= " + endDateLong +
-                " AND good LIKE '%" + svQuery + "%' " +
-                " GROUP BY good ORDER BY summarize", null);
+        String minDate, maxDate;
 
-        if (c.moveToPosition(num)) {
-            everyDayVector.add(0, c.getString(c.getColumnIndex("good")));
-            everyDayVector.add(1, c.getString(c.getColumnIndex("summarize")));
-        }
-
-        return everyDayVector;
-    }
-
-
-    public int getRowsCountStat_everypurch(long endDateLong, String svQuery) {
-        Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from mytable" +
-                " where date <= " + endDateLong +
-                " AND good LIKE '%" + svQuery + "%' " +
-                " GROUP BY good ORDER BY summarize", null);
-        int count = c.getCount();
-        //Log.d("mylogs", "number of every purchase vector = " + count);
-        c.close();
-        return count;
-    }
-
-    public Vector EveryPurchTable(int num,
-                                  long endDateLong,
-                                  String svQuery){
-
-        Vector<String> everyDayVector = new Vector<>();
+        if (startDateLong != 0) {minDate = " date >= " + startDateLong + " AND ";} else {minDate = "";}
+        if (endDateLong != 0) {maxDate = " date <= " + endDateLong;} else {maxDate = "";}
 
         Cursor c = db.rawQuery("SELECT good, date, sum(price) AS summarize from mytable" +
-                " where date <= " + endDateLong +
+                " where " + minDate + maxDate +
                 " AND good LIKE '%" + svQuery + "%' " +
                 " GROUP BY good ORDER BY summarize", null);
 

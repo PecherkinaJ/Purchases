@@ -54,8 +54,8 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
     TableLayout tableTotal;
 
-    Long startDateLong;
-    Long endDateLong;
+    Long startDateLong = (long) 0;
+    Long endDateLong = (long) 0;
 
     ArrayList<String> arrayString = new ArrayList();
     ArrayList<String> arrayFloat = new ArrayList();
@@ -275,19 +275,17 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
             e.printStackTrace();
         }
 
-        long startDateLong = 0;
-        if (!strDate1.isEmpty()) {
-            startDateLong = startDate.getTime();
-        } else {
-            startDateLong = 0;
-        }
+        if (!strDate1.isEmpty()) startDateLong = startDate.getTime();
 
-        endDateLong = endDate.getTime() + (60*60*24*1000 - 1000);
+        if (!strDate2.isEmpty()) endDateLong = endDate.getTime() + 60*60*24*1000 - 1000;
 
         svQuery = svSearch.getQuery().toString();
 
-        //TBobj.TableForQueries(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy);
-        Log.d("mylogs", "Цены в пределах: " + flExpDown + " и " + flExpTop);
+        //Log.d("mylogs", "Цены в пределах: " + flExpDown + " и " + flExpTop);
+        Log.d("mylogs", "Даты в пределах: ." + strDate1 + ". и ." + strDate2 + ".");
+        Log.d("mylogs", "Даты в LONG: ." + startDateLong + ". и ." + endDateLong + ".");
+
+        TBobj.TableForQueries(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy);
     }
 
 
