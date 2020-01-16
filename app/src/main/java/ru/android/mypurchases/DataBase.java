@@ -233,15 +233,18 @@ public class DataBase extends SQLiteOpenHelper {
         if (flExpDown != 0) {minPrice = " PRICE >=" + flExpDown + " AND ";} else {minPrice = "";}
         if (flExpTop != 0) {maxPrice = " PRICE <=" + flExpTop + " AND ";} else {maxPrice = "";}
         if (startDateLong != 0) {minDate = " date >= " + startDateLong + " AND ";} else {minDate = "";}
-        if (endDateLong != 0) {maxDate = " date <= " + endDateLong;} else {maxDate = "";}
+        if (endDateLong != 0) {maxDate = " date <= " + endDateLong + " AND ";} else {maxDate = "";}
 
-        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE "
-                + minPrice + maxPrice + minDate + maxDate
-                + " GOOD LIKE '%" + svQuery + "%' " +
+        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE " +
+                minPrice + maxPrice + minDate + maxDate +
+                " GOOD LIKE '%" + svQuery + "%' " +
                 " ORDER BY " + orderBy + " , date", null);
 
         int count = c.getCount();
         c.close();
+
+        Log.d("mylogs", "" + minPrice + " " + maxPrice + minDate + maxDate);
+
         return count;
     }
 
@@ -260,11 +263,11 @@ public class DataBase extends SQLiteOpenHelper {
         if (flExpDown != 0) {minPrice = " PRICE >=" + flExpDown + " AND ";} else {minPrice = "";}
         if (flExpTop != 0) {maxPrice = " PRICE <=" + flExpTop + " AND ";} else {maxPrice = "";}
         if (startDateLong != 0) {minDate = " date >= " + startDateLong + " AND ";} else {minDate = "";}
-        if (endDateLong != 0) {maxDate = " date <= " + endDateLong;} else {maxDate = "";}
+        if (endDateLong != 0) {maxDate = " date <= " + endDateLong + " AND ";} else {maxDate = "";}
 
-        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE "
-                + minPrice + maxPrice + minDate + maxDate
-                + " GOOD LIKE '%" + svQuery + "%' " +
+        Cursor c = db.rawQuery("SELECT * FROM mytable WHERE " +
+                minPrice + maxPrice + minDate + maxDate +
+                " GOOD LIKE '%" + svQuery + "%' " +
                 " ORDER BY " + orderBy + " , date", null);
 
         if (c.moveToPosition(num)) {

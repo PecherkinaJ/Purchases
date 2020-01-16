@@ -127,7 +127,12 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         });
 
         etMoreExpensive = (EditText) findViewById(R.id.etMoreExpensive);
+        etMoreExpensive.setFocusable(false);
+        etMoreExpensive.setFocusableInTouchMode(true);
+
         etLessExpensive = (EditText) findViewById(R.id.etLessExpensive);
+        etLessExpensive.setFocusable(false);
+        etLessExpensive.setFocusableInTouchMode(true);
 
         ArrayAdapter<String> adapterG = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data);
         adapterG.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -234,8 +239,8 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
     String strDate1;
     String strDate2;
-    float flExpDown;
-    float flExpTop;
+    float flExpDown = 0;
+    float flExpTop = 0;
     String svQuery;
 
 
@@ -249,15 +254,11 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
             orderBy = "PRICE";
         }
 
-        if (TextUtils.isEmpty(etMoreExpensive.getText().toString())) {
-            flExpDown = 0;
-        } else {
+        if (!TextUtils.isEmpty(etMoreExpensive.getText().toString())) {
             flExpDown = Float.parseFloat(etMoreExpensive.getText().toString());
         }
 
-        if (TextUtils.isEmpty(etMoreExpensive.getText().toString())) {
-            flExpTop = 0;
-        } else {
+        if (!TextUtils.isEmpty(etLessExpensive.getText().toString())) {
             flExpTop = Float.parseFloat(etLessExpensive.getText().toString());
         }
 
@@ -282,8 +283,8 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         svQuery = svSearch.getQuery().toString();
 
         //Log.d("mylogs", "Цены в пределах: " + flExpDown + " и " + flExpTop);
-        Log.d("mylogs", "Даты в пределах: ." + strDate1 + ". и ." + strDate2 + ".");
-        Log.d("mylogs", "Даты в LONG: ." + startDateLong + ". и ." + endDateLong + ".");
+        //Log.d("mylogs", "Даты в пределах: ." + strDate1 + ". и ." + strDate2 + ".");
+        //Log.d("mylogs", "Даты в LONG: ." + startDateLong + ". и ." + endDateLong + ".");
 
         TBobj.TableForQueries(flExpDown, flExpTop, startDateLong, endDateLong, svQuery, orderBy);
     }
