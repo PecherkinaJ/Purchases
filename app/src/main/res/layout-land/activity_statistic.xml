@@ -201,11 +201,11 @@
 
             <TableLayout
                 android:id="@+id/tableTotal"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="4dp"
                 android:divider="@drawable/ic_launcher_background"
-                android:stretchColumns="2" />
+                android:stretchColumns="0,1,2,3" />
         </ScrollView>
 
     </LinearLayout>

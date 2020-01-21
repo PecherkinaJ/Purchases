@@ -1,11 +1,10 @@
 package ru.android.mypurchases;
 
 import android.app.Activity;
-import android.content.ContentValues;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -23,12 +22,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Comment;
-
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 
@@ -227,6 +222,8 @@ public class TablesBuilding extends Activity {
 
         TextView firstTextView = (TextView) t.getChildAt(0);
         final String IDText1 = firstTextView.getText().toString();
+        TextView secondTextView = (TextView) t.getChildAt(1);
+        final String GoodText = secondTextView.getText().toString();
 
         clickedRow = Integer.parseInt(IDText1);
         Log.d("mylogs", "clicked row = " + clickedRow);
@@ -250,15 +247,29 @@ public class TablesBuilding extends Activity {
                         break;
 
                     case R.id.MENU_DELETE:
-                        table.removeViewAt(tableRowID);
-                        DBobj.DeleteFromDB(clickedRow, "mytable");
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        table.removeViewAt(tableRowID);
+                                        DBobj.DeleteFromDB(clickedRow, "mytable");
+                                        Toast.makeText(context, "Удалено", Toast.LENGTH_LONG).show();
+                                        break;
+
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        break;
+                                }
+                            }
+                        };
+                        AlertDialog.Builder ab = new AlertDialog.Builder(context);
+                        ab.setMessage("Подтвердите удаление").setPositiveButton("Да", dialogClickListener)
+                                .setNegativeButton("Нет", dialogClickListener).show();
                         break;
 
                     case R.id.MENU_COMMENT:
                         comment = DBobj.ShowCommentPopup(clickedRow);
                         AddComment();
-
-
                         break;
 
                     default:
@@ -427,7 +438,7 @@ public class TablesBuilding extends Activity {
         tvGood.setTextSize(16);
         tvGood.setPadding(5, 5, 5, 20);
         tvPrice.setTextSize(16);
-        tvPrice.setPadding(35, 5, 15, 20);
+        tvPrice.setPadding(5, 5, 15, 20);
         tvPrice.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
 
         tvID.setText(ID);
@@ -449,18 +460,6 @@ public class TablesBuilding extends Activity {
             tvPrice.setTypeface(null, Typeface.BOLD_ITALIC);
         }
 
-        row.setOnLongClickListener(new View.OnLongClickListener() {
-
-            @Override
-            public boolean onLongClick(View v) {
-                // TODO Auto-generated method stub
-                v.setBackgroundColor(Color.GRAY);
-                showPopupQueries(v, context);
-
-                tableRowID = table.indexOfChild(v);
-                return true;
-            }
-        });
         row.setOnClickListener(onClickListenerStat);
         registerForContextMenu(row);
     }
@@ -477,6 +476,7 @@ public class TablesBuilding extends Activity {
         }
 
     };
+
 
     public void showPopupQueries(final View v, final Context context) {
         popup = new PopupMenu(context, v);
@@ -502,8 +502,24 @@ public class TablesBuilding extends Activity {
                         break;
 
                     case R.id.MENU_DELETE:
-                        table.removeViewAt(tableRowID);
-                        DBobj.DeleteFromDB(clickedRow, "mytable");
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        table.removeViewAt(tableRowID);
+                                        DBobj.DeleteFromDB(clickedRow, "mytable");
+                                        Toast.makeText(context, "Удалено", Toast.LENGTH_LONG).show();
+                                        break;
+
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        break;
+                                }
+                            }
+                        };
+                        AlertDialog.Builder ab = new AlertDialog.Builder(context);
+                        ab.setMessage("Подтвердите удаление").setPositiveButton("Да", dialogClickListener)
+                                .setNegativeButton("Нет", dialogClickListener).show();
                         break;
 
                     default:
@@ -692,6 +708,7 @@ public class TablesBuilding extends Activity {
     }
 
 
+    ClipboardManager clipboard;
     public void showPopupMenuFP(final View v) {
 
         final PopupMenu popup = new PopupMenu(context, v);
@@ -737,6 +754,17 @@ public class TablesBuilding extends Activity {
                         table.removeViewAt(tableRowID);
                         DBobj.DeleteFromDB(clickedRow, "futPurchTable");
                         break;
+
+
+                    /*case R.id.MENU_COPY:
+                        clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("label","Your Text");
+                        clipboard.setPrimaryClip(clip);
+
+                        Log.d("mylogs", "copied " + clip.getDescription());
+
+                        break;*/
+
 
                     default:
                         break;

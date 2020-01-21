@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
-public class Settings extends AppCompatActivity implements View.OnClickListener{
+public class Additional extends AppCompatActivity implements View.OnClickListener{
 
     Button btnExport;
     Button btnImport;
@@ -33,7 +33,7 @@ public class Settings extends AppCompatActivity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_additional);
         isStoragePermissionGranted();
 
         save = new Saving();
