@@ -54,8 +54,8 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
     TableLayout tableTotal;
 
-    Long startDateLong = (long) 0;
-    Long endDateLong = (long) 0;
+    //Long startDateLong = (long) 0;
+    //Long endDateLong = (long) 0;
 
     ArrayList<String> arrayString = new ArrayList();
     ArrayList<String> arrayFloat = new ArrayList();
@@ -254,13 +254,18 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
             orderBy = "PRICE";
         }
 
-        if (!TextUtils.isEmpty(etMoreExpensive.getText().toString())) {
-            flExpDown = Float.parseFloat(etMoreExpensive.getText().toString());
-        }
+        /*if (!strDate1.isEmpty()) startDateLong = startDate.getTime();
+        else if (strDate1.isEmpty()) startDateLong = (long) 0;*/
 
-        if (!TextUtils.isEmpty(etLessExpensive.getText().toString())) {
-            flExpTop = Float.parseFloat(etLessExpensive.getText().toString());
-        }
+        String min = etMoreExpensive.getText().toString();
+        String max = etLessExpensive.getText().toString();
+
+        if (!min.isEmpty()) flExpDown = Float.parseFloat(etMoreExpensive.getText().toString());
+        else if (min.isEmpty()) flExpDown = 0;
+
+
+        if (!max.isEmpty()) flExpTop = Float.parseFloat(etLessExpensive.getText().toString());
+        else if (max.isEmpty()) flExpTop = 0;
 
 
         strDate1 = etDateBuy.getText().toString();
@@ -276,9 +281,14 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
             e.printStackTrace();
         }
 
+        Long startDateLong = (long) 0;
+        Long endDateLong = (long) 0;
+
         if (!strDate1.isEmpty()) startDateLong = startDate.getTime();
+        else if (strDate1.isEmpty()) startDateLong = (long) 0;
 
         if (!strDate2.isEmpty()) endDateLong = endDate.getTime() + 60*60*24*1000 - 1000;
+        else if (strDate2.isEmpty()) endDateLong = (long) 0;
 
         svQuery = svSearch.getQuery().toString();
 
@@ -309,14 +319,14 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
             e.printStackTrace();
         }
 
-        long startDateLong;
-        if (!strDate1.isEmpty()) {
-            startDateLong = startDate.getTime();
-        } else {
-            startDateLong = 0;
-        }
+        Long startDateLong;
+        Long endDateLong = (long) 0;
 
-        long endDateLong = endDate.getTime() + (60*60*24*1000 - 1000);
+        if (!strDate1.isEmpty()) startDateLong = startDate.getTime();
+        else startDateLong = (long) 0;
+
+        if (!strDate2.isEmpty()) endDateLong = endDate.getTime() + (60*60*24*1000 - 1000);
+        else if (strDate2.isEmpty()) endDateLong = (long) 0;
 
         TBobj.TableForEveryDay(startDateLong, endDateLong);
     }
@@ -350,14 +360,15 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
             e.printStackTrace();
         }
 
-        long startDateLong;
-        if (!strDate1.isEmpty()) {
-            startDateLong = startDate.getTime();
-        } else {
-            startDateLong = 0;
-        }
+        Long startDateLong = (long) 0;
+        Long endDateLong = (long) 0;
 
-        long endDateLong = endDate.getTime() + (60*60*24*1000 - 1000);
+        if (!strDate1.isEmpty()) startDateLong = startDate.getTime();
+        else startDateLong = (long) 0;
+
+        if (!strDate2.isEmpty()) endDateLong = endDate.getTime() + (60*60*24*1000 - 1000);
+        else if (strDate2.isEmpty()) endDateLong = (long) 0;
+
         Log.d("mylogs", "dates = " + startDateLong + " and " + endDateLong);
 
         svQuery = svSearch.getQuery().toString();
