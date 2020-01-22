@@ -14,7 +14,7 @@
         android:label="Мои покупки"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme">
         <activity android:name=".Additional"></activity>
         <activity android:name=".Charts" />
         <activity android:name=".FuturePurchases" />

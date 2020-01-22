@@ -633,6 +633,48 @@ public class TablesBuilding extends Activity {
 
     /* FUTURE PURCHASES */
 
+    public void AddNewElementFP(){
+        final EditText taskEditText = new EditText(context);
+        AlertDialog dialogNewFP = new AlertDialog.Builder(context)
+                .setTitle("Новая покупка")
+                .setView(taskEditText)
+                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = taskEditText.getText().toString();
+
+                        if (TextUtils.isEmpty(taskEditText.getText())) {
+                            Toast.makeText(context, "Поле пусто", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        else {
+                            AddToFP(task);
+                            Toast.makeText(context, "Элемент добавлен", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Отмена", null)
+                .setNeutralButton("Далее", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String task = taskEditText.getText().toString();
+
+                        if (TextUtils.isEmpty(taskEditText.getText())) {
+                            Toast.makeText(context, "Поле пусто", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        else {
+                            AddToFP(task);
+                            Toast.makeText(context, "Элемент добавлен", Toast.LENGTH_SHORT).show();
+                        }
+                        AddNewElementFP();
+                    }
+                })
+                .create();
+        dialogNewFP.show();
+    }
+
+
     public void AddToFP(String futureGood){
         DBobj.FillingFutPurch(futureGood, "false");
 
@@ -708,7 +750,6 @@ public class TablesBuilding extends Activity {
     }
 
 
-    ClipboardManager clipboard;
     public void showPopupMenuFP(final View v) {
 
         final PopupMenu popup = new PopupMenu(context, v);
@@ -747,24 +788,14 @@ public class TablesBuilding extends Activity {
 
                     case R.id.MENU_EDIT:
                         ifEdition = true;
-                        FP.EditionTable();
+                        String purchase = DBobj.GetDataToEditionFP(clickedRow);
+                        EditElementFP(purchase);
                         break;
 
                     case R.id.MENU_DELETE:
                         table.removeViewAt(tableRowID);
                         DBobj.DeleteFromDB(clickedRow, "futPurchTable");
                         break;
-
-
-                    /*case R.id.MENU_COPY:
-                        clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("label","Your Text");
-                        clipboard.setPrimaryClip(clip);
-
-                        Log.d("mylogs", "copied " + clip.getDescription());
-
-                        break;*/
-
 
                     default:
                         break;
@@ -786,6 +817,36 @@ public class TablesBuilding extends Activity {
     }
 
 
+    private void EditElementFP(String s){
+        final EditText taskEditText = new EditText(context);
+        taskEditText.setText(s);
+        AlertDialog dialogEditFP = new AlertDialog.Builder(context)
+                .setTitle("Редактирование покупки")
+                .setView(taskEditText)
+                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = taskEditText.getText().toString();
+
+                        if (TextUtils.isEmpty(taskEditText.getText())) {
+                            ifEdition = false;
+                            Toast.makeText(context, "Поле пусто", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        else {
+                            DBobj.UpdateFP(task);
+                            RecreatingRowFP();
+                            ifEdition = false;
+                            Toast.makeText(context, "Изменения сохранены", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Отмена", null)
+                .create();
+        dialogEditFP.show();
+    }
+
+
     private void BoughtPurch() {
 
         final long todayDate = new Date(System.currentTimeMillis()).getTime();
@@ -804,7 +865,7 @@ public class TablesBuilding extends Activity {
                         float taskFloat = Float.parseFloat(task);
 
                         if (TextUtils.isEmpty(taskEditText.getText())) {
-                            Toast.makeText(getApplicationContext(), "Не добавлено. Введите правильную сумму", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Не добавлено. Введите правильную сумму", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         else {
@@ -813,6 +874,7 @@ public class TablesBuilding extends Activity {
                             Log.d("mylogs", "\nдобавлено: \ngood = " + goodText + ", \n price = " + task);
                             DBobj.DeleteFromDB(clickedRow, "futPurchTable");
                             table.removeViewAt(tableRowID);
+                            Toast.makeText(context, "Элемент добавлен", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
