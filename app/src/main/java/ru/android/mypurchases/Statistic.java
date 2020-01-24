@@ -46,7 +46,7 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
     Button btnShowTable;
     Button btnShowGraph;
 
-    String[] data = {"Дата", "Продукт", "Цена", "Сумма за каждый день", "Сумма по месяцам", "Сумма по покупкам"};
+    String[] data = {"Дата", "Продукт", "Цена", "Сумма за каждый день", "Сумма по месяцам", "Сумма по покупкам", "Итог за выбранный период"};
 
     String orderBy = null;
 
@@ -177,6 +177,14 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
                     enableSearchView(etMoreExpensive, false);
                     enableSearchView(etLessExpensive, false);
                 }
+                if (position == 6) {
+                    btnShowGraph.setEnabled(false);
+                    enableSearchView(svSearch, false);
+                    enableSearchView(etMoreExpensive, false);
+                    enableSearchView(etLessExpensive, false);
+                    enableSearchView(etDateBuy, true);
+                    enableSearchView(etDateBuyEnd, true);
+                }
 
             }
 
@@ -213,6 +221,9 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
                         break;
                     case 5:
                         TotalForEveryPurch();
+                        break;
+                    case 6:
+                        ConcretePeriod();
                         break;
                     default:
                         Queries();
@@ -253,9 +264,6 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         } else if (posOfSpin == 2) {
             orderBy = "PRICE";
         }
-
-        /*if (!strDate1.isEmpty()) startDateLong = startDate.getTime();
-        else if (strDate1.isEmpty()) startDateLong = (long) 0;*/
 
         String min = etMoreExpensive.getText().toString();
         String max = etLessExpensive.getText().toString();
@@ -374,6 +382,38 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         svQuery = svSearch.getQuery().toString();
 
         TBobj.TableForEveryPurch(startDateLong, endDateLong, svQuery);
+    }
+
+
+    private void ConcretePeriod(){
+        strDate1 = etDateBuy.getText().toString();
+
+        if (TextUtils.isEmpty(etDateBuyEnd.getText().toString())) {
+            strDate2 = dateToday;
+        } else {
+            strDate2 = etDateBuyEnd.getText().toString();
+        }
+
+        Date startDate = new Date();
+        Date endDate = new Date();
+
+        try {
+            startDate = new SimpleDateFormat("dd.MM.yyyy").parse(strDate1);
+            endDate = new SimpleDateFormat("dd.MM.yyyy").parse(strDate2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Long startDateLong;
+        Long endDateLong = (long) 0;
+
+        if (!strDate1.isEmpty()) startDateLong = startDate.getTime();
+        else startDateLong = (long) 0;
+
+        if (!strDate2.isEmpty()) endDateLong = endDate.getTime() + (60*60*24*1000 - 1000);
+        else if (strDate2.isEmpty()) endDateLong = (long) 0;
+
+        TBobj.TableForConcretePeriod(startDateLong, endDateLong);
     }
 
 

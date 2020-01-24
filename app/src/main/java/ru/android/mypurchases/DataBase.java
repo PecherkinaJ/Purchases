@@ -406,6 +406,30 @@ public class DataBase extends SQLiteOpenHelper {
 
 
 
+       public String ConcretePeriodTable(long startDateLong, long endDateLong){
+
+        String concreteStr = "";
+
+        String minDate, maxDate;
+
+        if (startDateLong != 0) {minDate = " date >= " + startDateLong + " AND ";} else {minDate = "";}
+        if (endDateLong != 0) {maxDate = " date <= " + endDateLong;} else {maxDate = "";}
+
+        Cursor c = db.rawQuery("SELECT SUM(PRICE) AS summarize, date " +
+                " FROM mytable " +
+                " WHERE " + minDate + maxDate +
+                " ORDER BY summarize" , null);
+
+        if (c.moveToFirst()) {
+            concreteStr =  c.getString(c.getColumnIndex("summarize"));
+            Log.d("mylogs", "summarize = " + concreteStr);
+        }
+        c.close();
+        return concreteStr;
+    }
+
+
+
     /* FUTURE PURCHASES */
 
     public void FillingFutPurch(String insertGood, String comment){

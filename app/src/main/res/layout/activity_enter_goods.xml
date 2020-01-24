@@ -11,13 +11,15 @@
 
         <EditText
             android:id="@+id/etDate"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5pt"
+            android:layout_marginRight="5pt"
             android:layout_weight="1"
             android:ems="10"
+            android:focusable="false"
             android:hint="Дата покупки"
-            android:inputType="date"
-            android:focusable="false"/>
+            android:inputType="date" />
 
     </LinearLayout>
 
@@ -79,12 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:stretchColumns="1,2,3"
-            android:clickable="true" />
+            android:stretchColumns="1,2,3" />
 
     </ScrollView>
 

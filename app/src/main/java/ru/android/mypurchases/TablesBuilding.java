@@ -34,7 +34,8 @@ public class TablesBuilding extends Activity {
     TextView tvID, tvDate, tvGood, tvPrice;
 
     TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT);
-    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT);
+    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+    TableRow.LayoutParams rowParamsEG = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT);
     TableRow row;
 
     int tableRowID;
@@ -159,16 +160,16 @@ public class TablesBuilding extends Activity {
         tvDate = new TextView(context);
         tvGood = new TextView(context);
         tvPrice = new TextView(context);
-        tvID.setLayoutParams(rowParams);
-        tvDate.setLayoutParams(rowParams);
-        tvGood.setLayoutParams(rowParams);
-        tvPrice.setLayoutParams(rowParams);
+        tvID.setLayoutParams(rowParamsEG);
+        tvDate.setLayoutParams(rowParamsEG);
+        tvGood.setLayoutParams(rowParamsEG);
+        tvPrice.setLayoutParams(rowParamsEG);
 
         tvID.setTextSize(1);
         tvDate.setTextSize(15);
         tvDate.setPadding(5, 5, 5, 20);
         tvGood.setTextSize(16);
-        tvGood.setPadding(5, 5, 5, 20);
+        tvGood.setPadding(35, 5, 5, 20);
         tvPrice.setTextSize(16);
         tvPrice.setPadding(35, 5, 15, 20);
         tvPrice.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
@@ -331,8 +332,9 @@ public class TablesBuilding extends Activity {
     }
 
 
+/**********************************************************************/
 
-    /* STATISTIC */
+    /** STATISTIC */
 
     public void HeadRow(String firstColName,
                         String secondColName) {
@@ -384,6 +386,30 @@ public class TablesBuilding extends Activity {
 
         row.addView(tvID);
         row.addView(tvDate);
+
+        table.addView(row, tableRowNum);
+    }
+
+public void GeneralTableInStatistic(String firstCol,
+                                        int tableRowNum){
+
+        row = new TableRow(context);
+        row.setLayoutParams(tableParams);
+
+        tvID = new TextView(context);
+        tvDate = new TextView(context);
+
+        tvID.setLayoutParams(rowParams);
+        tvDate.setLayoutParams(rowParams);
+
+        tvID.setTextSize(15);
+        tvID.setPadding(5, 5, 5, 20);
+        tvDate.setTextSize(15);
+        tvDate.setPadding(5, 5, 5, 20);
+
+        tvID.setText(firstCol);
+
+        row.addView(tvID);
 
         table.addView(row, tableRowNum);
     }
@@ -631,7 +657,26 @@ public class TablesBuilding extends Activity {
 
 
 
-    /* FUTURE PURCHASES */
+    public void TableForConcretePeriod(long startDateLong, long endDateLong){
+        arrayFloat.clear();
+        arrayString.clear();
+        table.removeAllViews();
+        table.setColumnStretchable(0, true);
+        table.setColumnStretchable(1, true);
+        HeadRow("Общая стоимость:", "");
+
+        String sum = DBobj.ConcretePeriodTable(startDateLong, endDateLong);
+        Log.d("mylogs", "SUM = " + sum);
+        if (sum != null) {GeneralTableInStatistic(sum, 1);}
+        else {GeneralTableInStatistic("Нет данных", 1);}
+
+    }
+
+
+
+/*************************************************************************************/
+
+    /** FUTURE PURCHASES */
 
     public void AddNewElementFP(){
         final EditText taskEditText = new EditText(context);
