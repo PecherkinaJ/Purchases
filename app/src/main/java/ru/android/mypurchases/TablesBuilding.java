@@ -642,7 +642,6 @@ public class TablesBuilding extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String task = taskEditText.getText().toString();
-
                         if (TextUtils.isEmpty(taskEditText.getText())) {
                             Toast.makeText(context, "Поле пусто", Toast.LENGTH_SHORT).show();
                             return;
@@ -841,7 +840,12 @@ public class TablesBuilding extends Activity {
                         }
                     }
                 })
-                .setNegativeButton("Отмена", null)
+                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ifEdition = false;
+                    }
+                })
                 .create();
         dialogEditFP.show();
     }
