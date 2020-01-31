@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
-                android:foregroundGravity="bottom|right"
+                android:layout_gravity="bottom|right"
                 android:src="@android:drawable/ic_menu_info_details"
                 app:backgroundTint="@color/colorPrimary" />
 
