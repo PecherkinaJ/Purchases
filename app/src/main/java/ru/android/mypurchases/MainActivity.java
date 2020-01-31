@@ -1,6 +1,7 @@
 package ru.android.mypurchases;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,12 +13,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button goodEnt;
     Button stat;
     Button futPurch;
-    Button additional;
 
     Intent GoodIntent;
     Intent Statistic;
     Intent FuturePurchases;
     Intent Additional;
+
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         futPurch = findViewById(R.id.futPurch);
         futPurch.setOnClickListener(this);
 
-        additional = findViewById(R.id.settings);
-        additional.setOnClickListener(this);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(this);
     }
 
 
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.futPurch:
                 startActivity(FuturePurchases);
                 break;
-            case R.id.settings:
+            case R.id.fab:
                 startActivity(Additional);
             default:
                 break;
