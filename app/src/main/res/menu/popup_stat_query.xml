@@ -1,18 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/file"
-        android:title="@string/edit_element" >
-        <!-- "file" submenu -->
-        <menu>
-            <item android:id="@+id/MENU_editDate"
-                android:title="@string/_date" />
-            <item android:id="@+id/MENU_editProduct"
-                android:title="@string/_product" />
-            <item android:id="@+id/MENU_editPrice"
-                android:title="@string/_price" />
-        </menu>
-    </item>
-
     <item
         android:id="@+id/MENU_COMMENT"
         android:title="@string/show_comment"/>

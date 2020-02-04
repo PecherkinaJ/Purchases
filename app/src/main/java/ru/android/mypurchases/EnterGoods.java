@@ -88,6 +88,7 @@ public class EnterGoods extends AppCompatActivity implements View.OnClickListene
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        etDate.setText(""+dateToday1);
         etDate.setOnClickListener(new View.OnClickListener() {
 
             @Override
