@@ -237,14 +237,14 @@ public class DataBase extends SQLiteOpenHelper {
 
         Cursor c = db.rawQuery("SELECT * FROM mytable WHERE " +
                 minPrice + maxPrice + minDate + maxDate +
-                " GOOD LIKE '%" + svQuery + "%' " +
-                " OR COMMENT LIKE '%" + svQuery + "%' " +
+                " (GOOD LIKE '%" + svQuery + "%' " +
+                " OR COMMENT LIKE '%" + svQuery + "%' )" +
                 " ORDER BY " + orderBy + " , date", null);
 
         int count = c.getCount();
         c.close();
 
-        Log.d("mylogs", "" + minPrice + " " + maxPrice + minDate + maxDate);
+        //Log.d("mylogs", "" + minPrice + maxPrice + minDate + maxDate);
 
         return count;
     }
@@ -268,8 +268,8 @@ public class DataBase extends SQLiteOpenHelper {
 
         Cursor c = db.rawQuery("SELECT * FROM mytable WHERE " +
                 minPrice + maxPrice + minDate + maxDate +
-                " GOOD LIKE '%" + svQuery + "%' " +
-                " OR COMMENT LIKE '%" + svQuery + "%' " +
+                " (GOOD LIKE '%" + svQuery + "%' " +
+                " OR COMMENT LIKE '%" + svQuery + "%' )" +
                 " ORDER BY " + orderBy + " , date", null);
 
         if (c.moveToPosition(num)) {

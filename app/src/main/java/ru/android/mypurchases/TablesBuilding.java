@@ -432,6 +432,8 @@ public class TablesBuilding extends Activity {
                                 String svQuery,
                                 String orderBy) {
 
+        Log.d("mylogs", "цены от " + flExpDown + " цены до " + flExpTop + " , даты от "  + startDateLong + " даты до " +
+                endDateLong + " , запрос: " + svQuery + " , сортировка " + orderBy);
         table.removeAllViews();
         HeadRow("id", "Дата:", "Продукт:", "Цена:", true);
 
