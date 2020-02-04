@@ -54,11 +54,14 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
 
     TableLayout tableTotal;
 
-    //Long startDateLong = (long) 0;
-    //Long endDateLong = (long) 0;
-
     ArrayList<String> arrayString = new ArrayList();
     ArrayList<String> arrayFloat = new ArrayList();
+
+    String strDate1;
+    String strDate2;
+    float flExpDown = 0;
+    float flExpTop = 0;
+    String svQuery;
 
 
     @Override
@@ -247,12 +250,6 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-
-    String strDate1;
-    String strDate2;
-    float flExpDown = 0;
-    float flExpTop = 0;
-    String svQuery;
 
 
     public void Queries(){

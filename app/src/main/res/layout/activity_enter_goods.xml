@@ -20,8 +20,9 @@
                 android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ввод покупок"
-                android:textSize="18sp" />
+                android:text="@string/enter_goods"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </android.support.v7.widget.Toolbar>
 

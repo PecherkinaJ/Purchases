@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">Мои покупки</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="tab_text_1">Экспорт на SD</string>
-    <string name="tab_text_2">Импорт с SD</string>
+    <string name="enter_goods">Ввод покупок</string>
+    <string name="statistic">Статистика</string>
+    <string name="fut_purchases">Не забыть купить</string>
+    <string name="additional">Дополнительно</string>
+
+
+    <string name="show_comment">Показать комментарий</string>
+    <string name="delete_element">Удалить элемент</string>
+    <string name="edit_element">Редактировать</string>
+
+    <string name="bought_element">Добавить в Мои покупки</string>
+
+    <string name="_date">Дату</string>
+    <string name="_product">Продукт</string>
+    <string name="_price">Цену</string>
+
+
 </resources>

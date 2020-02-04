@@ -1,6 +1,7 @@
 package ru.android.mypurchases;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -15,14 +16,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
 
@@ -52,6 +58,9 @@ public class TablesBuilding extends Activity {
 
     ArrayList<String> arrayString = new ArrayList();
     ArrayList<String> arrayFloat = new ArrayList();
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+    Calendar myCalendar;
 
 
     TablesBuilding(DataBase _db,
@@ -332,6 +341,7 @@ public class TablesBuilding extends Activity {
     }
 
 
+
 /**********************************************************************/
 
     /** STATISTIC */
@@ -390,7 +400,7 @@ public class TablesBuilding extends Activity {
         table.addView(row, tableRowNum);
     }
 
-public void GeneralTableInStatistic(String firstCol,
+    public void GeneralTableInStatistic(String firstCol,
                                         int tableRowNum){
 
         row = new TableRow(context);
@@ -548,6 +558,85 @@ public void GeneralTableInStatistic(String firstCol,
                                 .setNegativeButton("Нет", dialogClickListener).show();
                         break;
 
+                    case R.id.MENU_editDate:
+                        ifEdition = true;
+                        int clickedRow = EditionalRow();
+                        Vector<String> editVector = DBobj.GetDataToEdition(clickedRow);
+
+                        LinearLayout layout = new LinearLayout(context);
+                        layout.setOrientation(LinearLayout.VERTICAL);
+
+                        final EditText etDate = new EditText(context);
+                        etDate.setHint("Введите дату");
+                        myCalendar = Calendar.getInstance();
+                        final DatePickerDialog.OnDateSetListener calDate = new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                                  int dayOfMonth) {
+                                // TODO Auto-generated method stub
+                                myCalendar.set(Calendar.YEAR, year);
+                                myCalendar.set(Calendar.MONTH, monthOfYear);
+                                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                                etDate.setText(sdf.format(myCalendar.getTime()));
+                            }
+
+                        };
+                        etDate.setFocusable(false);
+                        etDate.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                // TODO Auto-generated method stub
+                                new DatePickerDialog(context, calDate, myCalendar
+                                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                            }
+                        });
+                        etDate.setText(editVector.get(1));
+                        layout.addView(etDate);
+
+                        final EditText etGood = new EditText(context);
+                        etGood.setHint("Введите продукт");
+                        etGood.setText(editVector.get(2));
+                        layout.addView(etGood);
+
+                        final EditText etPrice = new EditText(context);
+                        etPrice.setHint("Введите цену");
+                        etPrice.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                        etPrice.setText(editVector.get(3));
+                        layout.addView(etPrice);
+
+                        AlertDialog dialog = new AlertDialog.Builder(context)
+                                .setTitle("Редактирование")
+                                .setView(layout)
+                                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String _date = etDate.getText().toString();
+                                        String _good = etGood.getText().toString();
+                                        Float _price = Float.parseFloat(etPrice.getText().toString());
+                                        long _dateMS = 0;
+                                        try {
+                                            Date date = new SimpleDateFormat("dd.MM.yyyy").parse(_date);
+                                            _dateMS = date.getTime();
+                                        } catch (ParseException e) { e.printStackTrace(); }
+                                        DBobj.UpdateDB(_dateMS, _good, _price);
+                                        RecreatingRow();
+                                        Toast toast = Toast.makeText(context,
+                                                "Изменения сохранены", Toast.LENGTH_LONG);
+                                        toast.show();
+                                    }
+                                })
+                                .setNegativeButton("Отмена", null)
+                                .create();
+                        dialog.show();
+                        ifEdition = false;
+
+                        break;
+
+
                     default:
                         return false;
                 }
@@ -656,7 +745,6 @@ public void GeneralTableInStatistic(String firstCol,
     }
 
 
-
     public void TableForConcretePeriod(long startDateLong, long endDateLong){
         arrayFloat.clear();
         arrayString.clear();
@@ -689,7 +777,6 @@ public void GeneralTableInStatistic(String firstCol,
                         String task = taskEditText.getText().toString();
                         if (TextUtils.isEmpty(taskEditText.getText())) {
                             Toast.makeText(context, "Поле пусто", Toast.LENGTH_SHORT).show();
-                            return;
                         }
                         else {
                             AddToFP(task);
@@ -873,26 +960,19 @@ public void GeneralTableInStatistic(String firstCol,
                         String task = taskEditText.getText().toString();
 
                         if (TextUtils.isEmpty(taskEditText.getText())) {
-                            ifEdition = false;
                             Toast.makeText(context, "Поле пусто", Toast.LENGTH_SHORT).show();
-                            return;
                         }
                         else {
                             DBobj.UpdateFP(task);
                             RecreatingRowFP();
-                            ifEdition = false;
                             Toast.makeText(context, "Изменения сохранены", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
-                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ifEdition = false;
-                    }
-                })
+                .setNegativeButton("Отмена", null)
                 .create();
         dialogEditFP.show();
+        ifEdition = false;
     }
 
 

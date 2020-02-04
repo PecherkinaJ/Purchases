@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/MENU_BOUGHT"
-        android:title="Добавить в Мои покупки"/>
+        android:title="@string/bought_element"/>
     <item
         android:id="@+id/MENU_EDIT"
-        android:title="Редактировать элемент"/>
+        android:title="@string/edit_element"/>
     <item
         android:id="@+id/MENU_DELETE"
-        android:title="Удалить элемент"/>
+        android:title="@string/delete_element"/>
 
 </menu>
