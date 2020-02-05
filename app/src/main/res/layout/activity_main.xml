@@ -44,49 +44,92 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="?android:attr/actionBarSize">
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:layout_gravity="center">
 
-        <Button
-            android:id="@+id/goodent"
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_gravity="center"
             android:layout_marginTop="120dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:gravity="center"
-            android:text="Ввод покупок"
-            android:textAllCaps="false"
-            android:textSize="18sp" />
+            app:cardCornerRadius="4dp">
 
-        <Button
-            android:id="@+id/stat"
+            <ImageView
+                android:id="@+id/keyboard"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="0dp"
+                android:background="@drawable/keyb" />
+
+            <TextView
+                android:id="@+id/enter_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="120dp"
+                android:layout_toRightOf="@+id/keyboard"
+                android:text="@string/enter_goods"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:gravity="center"
-            android:text="Статистика покупок"
-            android:textAllCaps="false"
-            android:textSize="18sp" />
+            app:cardCornerRadius="4dp">
 
-        <Button
-            android:id="@+id/futPurch"
+            <ImageView
+                android:id="@+id/statistic"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="0dp"
+                android:background="@drawable/calc" />
+
+            <TextView
+                android:id="@+id/stat_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="120dp"
+                android:layout_toRightOf="@+id/statistic"
+                android:text="@string/statistic"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:gravity="center"
-            android:text="Не забыть купить"
-            android:textAllCaps="false"
-            android:textSize="18sp" />
+            app:cardCornerRadius="4dp">
+
+            <ImageView
+                android:id="@+id/futpurch"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="0dp"
+                android:background="@drawable/futpurch" />
+
+            <TextView
+                android:id="@+id/futpurch_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="120dp"
+                android:layout_toRightOf="@+id/futPurch"
+                android:text="@string/fut_purchases"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 

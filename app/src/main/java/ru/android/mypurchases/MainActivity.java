@@ -4,15 +4,16 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button goodEnt;
-    Button stat;
-    Button futPurch;
+    CardView cardEnter;
+    CardView cardStat;
+    CardView cardFutpurch;
 
     Intent GoodIntent;
     Intent Statistic;
@@ -31,14 +32,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FuturePurchases = new Intent(this, FuturePurchases.class);
         Additional = new Intent(this, Additional.class);
 
-        goodEnt = findViewById(R.id.goodent);
-        goodEnt.setOnClickListener(this);
+        cardEnter = findViewById(R.id.card_view1);
+        cardEnter.setOnClickListener(this);
 
-        stat = findViewById(R.id.stat);
-        stat.setOnClickListener(this);
+        cardStat = findViewById(R.id.card_view2);
+        cardStat.setOnClickListener(this);
 
-        futPurch = findViewById(R.id.futPurch);
-        futPurch.setOnClickListener(this);
+        cardFutpurch = findViewById(R.id.card_view3);
+        cardFutpurch.setOnClickListener(this);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
@@ -47,13 +48,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.goodent:
+
+            case R.id.card_view1:
                 startActivity(GoodIntent);
                 break;
-            case R.id.stat:
+            case R.id.card_view2:
                 startActivity(Statistic);
                 break;
-            case R.id.futPurch:
+            case R.id.card_view3:
                 startActivity(FuturePurchases);
                 break;
             case R.id.fab:
