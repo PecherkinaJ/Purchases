@@ -40,8 +40,7 @@ public class TablesBuilding extends Activity {
     TextView tvID, tvDate, tvGood, tvPrice;
 
     TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT);
-    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-    TableRow.LayoutParams rowParamsEG = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT);
+    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT);
     TableRow row;
 
     int tableRowID;
@@ -100,6 +99,8 @@ public class TablesBuilding extends Activity {
                         String thirdColName,
                         String fourthColName,
                         Boolean hidingFirstColumn) {
+
+        // TODO: get String array and bool
 
         row = new TableRow(context);
         row.setLayoutParams(tableParams);
@@ -169,10 +170,10 @@ public class TablesBuilding extends Activity {
         tvDate = new TextView(context);
         tvGood = new TextView(context);
         tvPrice = new TextView(context);
-        tvID.setLayoutParams(rowParamsEG);
-        tvDate.setLayoutParams(rowParamsEG);
-        tvGood.setLayoutParams(rowParamsEG);
-        tvPrice.setLayoutParams(rowParamsEG);
+        tvID.setLayoutParams(rowParams);
+        tvDate.setLayoutParams(rowParams);
+        tvGood.setLayoutParams(rowParams);
+        tvPrice.setLayoutParams(rowParams);
 
         tvID.setTextSize(1);
         tvDate.setTextSize(15);
@@ -200,7 +201,6 @@ public class TablesBuilding extends Activity {
 
             @Override
             public boolean onLongClick(View v) {
-                // TODO Auto-generated method stub
                 v.setBackgroundColor(Color.GRAY);
                 showPopupMenuEG(v);
 
@@ -216,7 +216,6 @@ public class TablesBuilding extends Activity {
     View.OnClickListener onClickListenerEG = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // TODO Auto-generated method stub
             v.setBackgroundColor(Color.GRAY);
             showPopupMenuEG(v);
             tableRowID = table.indexOfChild(v);

@@ -223,11 +223,11 @@ public class DataBase extends SQLiteOpenHelper {
     /* STATISTICS */
 
     int getRowsCountStat_query(float flExpDown,
-                                      float flExpTop,
-                                      long startDateLong,
-                                      long endDateLong,
-                                      String svQuery,
-                                      String orderBy) {
+                               float flExpTop,
+                               long startDateLong,
+                               long endDateLong,
+                               String svQuery,
+                               String orderBy) {
         String minPrice, maxPrice, minDate, maxDate;
 
         if (flExpDown != 0) {minPrice = " PRICE >=" + flExpDown + " AND ";} else {minPrice = "";}

@@ -17,14 +17,11 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Statistic extends AppCompatActivity implements View.OnClickListener {
 
@@ -68,6 +65,12 @@ public class Statistic extends AppCompatActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
+
+        /*
+        //Star War's March
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(new long[]{0, 500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500}, -1);*/
+
 
         svSearch = (SearchView) findViewById(R.id.svSearch);
 
