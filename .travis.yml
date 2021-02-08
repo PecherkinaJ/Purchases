@@ -32,6 +32,7 @@ branches:
   - master
   
 script:
+  - chmod +x gradlew
   - ./gradlew cleanAllModules
   - ./gradlew testAllModulesTravis
   - if [[ -n $TRAVIS_TAG ]]; then ./gradlew ship; fi
