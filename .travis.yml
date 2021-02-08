@@ -5,12 +5,30 @@ jdk:
   - openjdk8
   
 dist: trusty
-android:
-  components:
-  - build-tools-28.0.0
-  - android-28
-  - platform-tools
-  - tools
+env:
+  global:
+   - ANDROID_BUILD_TOOLS=28.0.3
+   - ADB_INSTALL_TIMEOUT=5
+   - ANDROID_API=28
+  android:
+    components:
+      - tools
+      - platform-tools-$ANDROID_BUILD_TOOLS
+      - build-tools-$ANDROID_BUILD_TOOLS
+      - android-$ANDROID_API
+      - android-$EMULATOR_API
+      - extra-google-m2repository
+      - extra-android-m2repository # for design library
+      - addon-google_apis-google-19 # google play services
+      - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API
+      - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API
+      - sys-img-armeabi-v7a-android-$EMULATOR_API
+    licenses:
+      - android-sdk-preview-license-.+
+      - android-sdk-license-.+
+      - google-gdk-license-.+
+jdk:
+  - oraclejdk8
   
 branches:
   only:
