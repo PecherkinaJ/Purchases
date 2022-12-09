@@ -5,9 +5,9 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentPurchasesTable extends CurrentTable implements MyTable {
+public class CurrentPurchasesTable extends MyTable {
 
-    public CurrentPurchasesTable(Context context){
+    public CurrentPurchasesTable(Context context) {
         super(context);
     }
 
@@ -17,11 +17,6 @@ public class CurrentPurchasesTable extends CurrentTable implements MyTable {
 
     @Override
     public void setTitle() {
-
-    }
-
-    @Override
-    public void displayCurrentData(List<ArrayList<String>> array) {
 
     }
 
