@@ -14,62 +14,64 @@ import ru.android.mypurchases.Parametres;
 
 public class MyTable {
 
-    Context context;
-    private Parametres parametres = new Parametres();
-    final TableLayout.LayoutParams tableParams;
-    final TableRow.LayoutParams rowParams;
+    private Context context;
+    final private TableLayout.LayoutParams tableParams;
+    final private TableRow.LayoutParams rowParams;
+    TableLayout table;
 
     public MyTable(Context context) {
         this.context = context;
+        Parametres parametres = new Parametres();
         tableParams = parametres.getTableParametres();
         rowParams = parametres.getRowParametres();
+        table = new TableLayout(context);
     }
 
     /*    void setTitle(String date, String good, String price); // general table
     void setTitle(String columnName);
     void setTitle(String columnName, String cost);*/
 
-    void setHeadRow() {
+    void setHeadRow(String[] rowNames, boolean isFirstRowHidden) {
         TableRow row = new TableRow(context);
-        row.setLayoutParams();
+        row.setLayoutParams(rowParams);
 
-        TextView ID1 = new TextView(context);
-        TextView date1 = new TextView(context);
-        TextView good1 = new TextView(context);
-        TextView price1 = new TextView(context);
-        TextView com1 = new TextView(context);
-        ID1.setLayoutParams(rowParams);
-        date1.setLayoutParams(rowParams);
-        good1.setLayoutParams(rowParams);
-        price1.setLayoutParams(rowParams);
-        com1.setLayoutParams(rowParams);
-        ID1.setTextSize(20);
-        ID1.setPadding(25, 5, 25, 5);
-        ID1.setTypeface(null, Typeface.BOLD_ITALIC);
-        date1.setTextSize(20);
-        date1.setPadding(25, 5, 25, 5);
-        date1.setTypeface(null, Typeface.BOLD_ITALIC);
-        good1.setTextSize(20);
-        good1.setPadding(25, 5, 25, 5);
-        good1.setTypeface(null, Typeface.BOLD_ITALIC);
-        price1.setTextSize(20);
-        price1.setPadding(25, 5, 25, 5);
-        price1.setTypeface(null, Typeface.BOLD_ITALIC);
-        price1.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
+        int rowNumber = rowNames.length;
 
-        ID1.setText(IDColName);
-        date1.setText(secondColName);
-        good1.setText(thirdColName);
-        price1.setText(fourthColName);
+        for (int i=0; i<rowNumber; i++){
+            TextView textView = new TextView(context);
+            textView.setLayoutParams(rowParams);
+            textView.setTextSize(20);
+            textView.setPadding(25, 5, 25, 5);
+            textView.setTypeface(null, Typeface.BOLD_ITALIC);
+            textView.setText(rowNames[i]);
+            row.addView(textView);
 
-        row.addView(ID1);
-        row.addView(date1);
-        row.addView(good1);
-        row.addView(price1);
+            if (isFirstRowHidden && i==0)
+                textView.setVisibility(View.GONE);
+        }
         table.addView(row);
+
     }
 
-    void drawCurrentData(List<ArrayList<String>> array) {
+    void drawCurrentData(List<ArrayList<String>> currentData, boolean isFirstRowHidden) {
+        TableRow row = new TableRow(context);
+        row.setLayoutParams(rowParams);
+
+        for (int i=0; i<currentData.size(); i++) {
+            ArrayList<String> array = currentData.get(i);
+            for (int j=0; j<array.size(); j++) {
+                TextView textView = new TextView(context);
+                textView.setLayoutParams(rowParams);
+                textView.setTextSize(16);
+                textView.setPadding(35, 5, 15, 20);
+                textView.setText(array.get(j));
+                row.addView(textView);
+
+                if (isFirstRowHidden && j == 0)
+                    textView.setVisibility(View.GONE);
+            }
+            table.addView(row);
+        }
 
     }
 }
